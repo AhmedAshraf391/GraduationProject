@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function OurServices() {
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 font-sans">
@@ -5,11 +7,21 @@ export default function OurServices() {
       <nav className="flex justify-between items-center p-5 bg-gray-800 text-white">
         <div className="text-2xl font-bold">MIZAN</div>
         <ul className="flex space-x-6">
-          <li className="hover:text-teal-400 cursor-pointer">Home</li>
-          <li className="hover:text-teal-400 cursor-pointer">Our Services</li>
-          <li className="hover:text-teal-400 cursor-pointer">Contact Us</li>
-          <li className="hover:text-teal-400 cursor-pointer">About Us</li>
-          <li className="hover:text-teal-400 cursor-pointer">FAQ</li>
+          <li>
+            <Link href="/home" className="hover:text-teal-400 cursor-pointer">Home</Link>
+          </li>
+          <li>
+            <Link href="/our-services" className="hover:text-teal-400 cursor-pointer">Our Services</Link>
+          </li>
+          <li>
+            <Link href="/contact-us" className="hover:text-teal-400 cursor-pointer">Contact Us</Link>
+          </li>
+          <li>
+            <Link href="/about-us" className="hover:text-teal-400 cursor-pointer">About Us</Link>
+          </li>
+          <li>
+            <Link href="/faq" className="hover:text-teal-400 cursor-pointer">FAQ</Link>
+          </li>
         </ul>
       </nav>
 

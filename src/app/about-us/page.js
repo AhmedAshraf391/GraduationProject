@@ -9,13 +9,13 @@ export default function AboutUs() {
                 <div className="text-2xl font-bold">MIZAN</div>
                 <ul className="flex space-x-6">
                     <li>
-                        <Link href="/" className="hover:text-teal-400 cursor-pointer">Home</Link>
+                        <Link href="/home" className="hover:text-teal-400 cursor-pointer">Home</Link>
                     </li>
                     <li>
-                        <Link href="/services" className="hover:text-teal-400 cursor-pointer">Our Services</Link>
+                        <Link href="/our-services" className="hover:text-teal-400 cursor-pointer">Our Services</Link>
                     </li>
                     <li>
-                        <Link href="/contact" className="hover:text-teal-400 cursor-pointer">Contact Us</Link>
+                        <Link href="/contact-us" className="hover:text-teal-400 cursor-pointer">Contact Us</Link>
                     </li>
                     <li>
                         <Link href="/about-us" className="hover:text-teal-400 cursor-pointer">About Us</Link>
@@ -68,9 +68,9 @@ export default function AboutUs() {
                     <div>
                         <h3 className="font-bold text-lg">Quick Links</h3>
                         <ul>
-                            <li><Link href="/">Home</Link></li>
+                            <li><Link href="/home">Home</Link></li>
                             <li><Link href="/services">Our Services</Link></li>
-                            <li><Link href="/contact">Contact Us</Link></li>
+                            <li><Link href="/contact-us">Contact Us</Link></li>
                             <li><Link href="/about-us">About Us</Link></li>
                             <li><Link href="/faq">FAQ</Link></li>
                         </ul>

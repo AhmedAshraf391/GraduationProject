@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from 'next/link';
 
 export default function Home() {
@@ -8,13 +9,13 @@ export default function Home() {
         <div className="text-2xl font-bold">MIZAN</div>
         <ul className="flex space-x-6">
           <li>
-            <Link href="/" className="hover:text-teal-400 cursor-pointer">Home</Link>
+            <Link href="/home" className="hover:text-teal-400 cursor-pointer">Home</Link>
           </li>
           <li>
-            <Link href="/services" className="hover:text-teal-400 cursor-pointer">Our Services</Link>
+            <Link href="/our-services" className="hover:text-teal-400 cursor-pointer">Our Services</Link>
           </li>
           <li>
-            <Link href="/contact" className="hover:text-teal-400 cursor-pointer">Contact Us</Link>
+            <Link href="/contact-us" className="hover:text-teal-400 cursor-pointer">Contact Us</Link>
           </li>
           <li>
             <Link href="/about-us" className="hover:text-teal-400 cursor-pointer">About Us</Link>
@@ -45,7 +46,7 @@ export default function Home() {
             className="w-1/2 px-4 py-2 rounded-l-lg focus:outline-none text-gray-800"
           />
           <button className="bg-teal-500 px-6 py-2 rounded-r-lg hover:bg-teal-600">
-            Let's Go
+            Let&apos;s Go
           </button>
         </div>
         <div className="flex justify-center mt-10 space-x-10">
@@ -80,11 +81,7 @@ export default function Home() {
               Read more
             </button>
           </div>
-          <img
-            src="/images/about.jpg"
-            alt="About Us"
-            className="rounded-lg shadow-lg"
-          />
+          <img src="../images/Rectangle 19.png" alt="About Us" className="rounded-lg shadow-lg" />
         </div>
       </section>
 
@@ -102,11 +99,7 @@ export default function Home() {
               key={index}
               className="bg-white p-4 rounded-lg shadow-lg text-center"
             >
-              <img
-                src={`/images/lawyer${index + 1}.jpg`}
-                alt={lawyer}
-                className="rounded-full w-24 h-24 mx-auto mb-4"
-              />
+              <img src={`/images/lawyer${index + 1}.jpg`} alt={lawyer} className="rounded-full w-24 h-24 mx-auto mb-4" />
               <h3 className="font-bold text-lg">{lawyer}</h3>
               <p>Specialization: Criminal Law</p>
               <p>Rating: ⭐⭐⭐⭐⭐</p>
@@ -198,9 +191,9 @@ export default function Home() {
           <div>
             <h3 className="font-bold text-lg">Quick Links</h3>
             <ul>
-              <li><Link href="/">Home</Link></li>
-              <li><Link href="/services">Our Services</Link></li>
-              <li><Link href="/contact">Contact Us</Link></li>
+              <li><Link href="/home">Home</Link></li>
+              <li><Link href="/our-services">Our Services</Link></li>
+              <li><Link href="/contact-us">Contact Us</Link></li>
               <li><Link href="/about-us">About Us</Link></li>
               <li><Link href="/faq">FAQ</Link></li>
             </ul>
