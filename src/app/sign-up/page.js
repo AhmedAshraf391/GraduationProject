@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState } from "react";
-import { FaUser, FaEnvelope, FaPhone, FaLock } from "react-icons/fa";
 
 export default function Signup() {
     const [formData, setFormData] = useState({
@@ -51,11 +51,11 @@ export default function Signup() {
     };
 
     return (
-        <div className="min-h-screen flex">
+        <div className="min-h-screen flex  bg-gray-200">
             {/* Left Side Image */}
             <div className="w-1/2 hidden md:block">
                 <img
-                    src="/images/signup-bg.jpg"
+                    src="/images/sign-up.png"
                     alt="Signup Background"
                     className="w-full h-full object-cover"
                 />
@@ -75,7 +75,7 @@ export default function Signup() {
                         <div>
                             <label className="block text-gray-700">Name</label>
                             <div className="relative">
-                                <FaUser className="absolute left-3 top-3 text-gray-500" />
+
                                 <input
                                     type="text"
                                     name="name"
@@ -93,7 +93,7 @@ export default function Signup() {
                         <div>
                             <label className="block text-gray-700">Email</label>
                             <div className="relative">
-                                <FaEnvelope className="absolute left-3 top-3 text-gray-500" />
+
                                 <input
                                     type="email"
                                     name="email"
@@ -111,7 +111,7 @@ export default function Signup() {
                         <div>
                             <label className="block text-gray-700">Phone</label>
                             <div className="relative">
-                                <FaPhone className="absolute left-3 top-3 text-gray-500" />
+
                                 <input
                                     type="text"
                                     name="phone"
@@ -129,7 +129,7 @@ export default function Signup() {
                         <div>
                             <label className="block text-gray-700">Password</label>
                             <div className="relative">
-                                <FaLock className="absolute left-3 top-3 text-gray-500" />
+
                                 <input
                                     type="password"
                                     name="password"
@@ -147,7 +147,7 @@ export default function Signup() {
                         <div>
                             <label className="block text-gray-700">Confirm Password</label>
                             <div className="relative">
-                                <FaLock className="absolute left-3 top-3 text-gray-500" />
+
                                 <input
                                     type="password"
                                     name="confirmPassword"
@@ -173,7 +173,7 @@ export default function Signup() {
                                         checked={formData.role === "lawyer"}
                                         onChange={handleChange}
                                     />
-                                    <span className="ml-2">Lawyer</span>
+                                    <span className="ml-2 text-stone-500">Lawyer</span>
                                 </label>
                                 <label className="flex items-center">
                                     <input
@@ -183,7 +183,7 @@ export default function Signup() {
                                         checked={formData.role === "client"}
                                         onChange={handleChange}
                                     />
-                                    <span className="ml-2">Client</span>
+                                    <span className="ml-2 text-stone-500">Client</span>
                                 </label>
                             </div>
                         </div>
@@ -194,8 +194,7 @@ export default function Signup() {
                         </button>
 
                         {/* Google Signup */}
-                        <button className="w-full flex justify-center items-center border py-2 rounded-lg hover:bg-gray-200">
-                            <img src="/images/google-icon.png" alt="Google Signup" className="w-5 h-5 mr-2" />
+                        <button className="w-full flex justify-center items-center border py-2 text-gray-500 rounded-lg hover:bg-gray-200">
                             Continue with Google
                         </button>
                     </form>

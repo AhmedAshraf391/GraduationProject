@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState } from "react";
 
@@ -43,7 +44,7 @@ export default function ResetPassword() {
                 {/* Left Side Illustration */}
                 <div className="hidden md:block w-1/2">
                     <img
-                        src="/images/reset-password.png"
+                        src="/images/reset-pass.png"
                         alt="Reset Password"
                         className="w-full"
                     />

@@ -3,9 +3,9 @@ import Link from 'next/link';
 
 export default function AboutUs() {
     return (
-        <div className="min-h-screen bg-gray-900 text-white font-sans">
+        <div className="min-h-screen bg-gray-900 text-white font-Parkinsans">
             {/* Navbar */}
-            <nav className="flex justify-between items-center p-5 bg-gray-800">
+            {/* <nav className="flex justify-between items-center p-5 bg-gray-800">
                 <div className="text-2xl font-bold">MIZAN</div>
                 <ul className="flex space-x-6">
                     <li>
@@ -24,11 +24,24 @@ export default function AboutUs() {
                         <Link href="/faq" className="hover:text-teal-400 cursor-pointer">FAQ</Link>
                     </li>
                 </ul>
-            </nav>
+            </nav> */}
+            <nav className="fixed top-0 left-0 w-full bg-transparent ">
+                <div className="container mx-auto px-6 py-3 flex justify-between items-center">
 
+                    <div className="flex items-center space-x-2 text-2xl text-white font-medium">MIZAN</div>
+                    {/* Navigation Links */}
+                    <ul className="hidden md:flex space-x-6 text-white font-medium">
+                        <li><Link href="/home" className="hover:text-stone-300">Home</Link></li>
+                        <li><Link href="/our-services" className="hover:text-stone-300">Our Services</Link></li>
+                        <li><Link href="/contact-us" className="hover:text-stone-300">Contact us</Link></li>
+                        <li><Link href="/about-us" className="hover:text-stone-300">About us</Link></li>
+                        <li><Link href="/faq" className="hover:text-stone-300">FAQ</Link></li>
+                    </ul>
+                </div>
+            </nav>
             {/* Hero Section */}
-            <section className="text-center py-20 px-5 bg-cover bg-center" style={{ backgroundImage: 'url(/images/court.jpg)' }}>
-                <h1 className="text-4xl font-bold mb-5">About Us</h1>
+            <section className="text-center py-20 px-5 bg-cover bg-center h-[70vh]" style={{ backgroundImage: 'url(/images/about-background.png)' }}>
+                <h1 className="text-4xl font-bold mb-4 mt-8">About Us</h1>
                 <p className="mb-8 text-lg max-w-2xl mx-auto">
                     Dedicated to providing professional legal services with integrity, excellence, and a commitment to achieving justice for our clients.
                 </p>
@@ -47,7 +60,7 @@ export default function AboutUs() {
                         </button>
                     </div>
                     <Image
-                        src="/images/about.jpg"
+                        src="/images/about-us.png"
                         alt="About Us"
                         width={500}
                         height={300}
@@ -57,7 +70,7 @@ export default function AboutUs() {
             </section>
 
             {/* Footer Section */}
-            <footer className="py-10 px-5 bg-gray-800 text-white">
+            <footer className="py-10 px-5 bg-gray-200 text-stone-700">
                 <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
                     <div>
                         <h3 className="font-bold text-lg">MIZAN</h3>
@@ -79,12 +92,12 @@ export default function AboutUs() {
                         <h3 className="font-bold text-lg">Contact Info</h3>
                         <p>Lorem Ipsum, Cairo, Egypt</p>
                         <p>01148113314</p>
-                        <div className="flex space-x-4 mt-4">
+                        {/* <div className="flex space-x-4 mt-4">
                             <span>FB</span>
                             <span>IG</span>
                             <span>TW</span>
                             <span>LN</span>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </footer>

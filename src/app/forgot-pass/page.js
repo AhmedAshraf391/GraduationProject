@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState } from "react";
-import { FaEnvelope } from "react-icons/fa";
 
 export default function ForgetPassword() {
     const [email, setEmail] = useState("");
@@ -25,7 +25,7 @@ export default function ForgetPassword() {
                 {/* Left Side Illustration */}
                 <div className="hidden md:block w-1/2">
                     <img
-                        src="/images/forgot-password.png"
+                        src="/images/forgot-pass.png"
                         alt="Forgot Password"
                         className="w-full"
                     />
@@ -35,7 +35,7 @@ export default function ForgetPassword() {
                 <div className="w-full md:w-1/2">
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">Forget Password</h2>
                     <p className="text-gray-500 mb-6">
-                        Don't worry! Enter your email address below and we will send you an OTP to reset your password.
+                        Do not worry! Enter your email address below and we will send you an OTP to reset your password.
                     </p>
 
                     {/* Success Message */}
@@ -49,9 +49,9 @@ export default function ForgetPassword() {
                     <form onSubmit={handleSubmit} className="space-y-4">
                         {/* Email Input */}
                         <div>
-                            <label className="block text-gray-700">Email</label>
+                            <label className="block text-gray-700 mb-2">Email</label>
                             <div className="relative">
-                                <FaEnvelope className="absolute left-3 top-3 text-gray-500" />
+                                
                                 <input
                                     type="email"
                                     name="email"

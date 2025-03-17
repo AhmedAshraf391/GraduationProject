@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState } from "react";
-import { FaEnvelope, FaLock } from "react-icons/fa";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -25,13 +25,13 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex">
+        <div className="min-h-screen flex h-screen bg-gray-200">
             {/* Left Side Image */}
             <div className="w-1/2 hidden md:block">
                 <img
-                    src="/images/login-bg.jpg"
+                    src="/images/login.png"
                     alt="Login Background"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-center"
                 />
             </div>
 
@@ -49,7 +49,7 @@ export default function Login() {
                         <div>
                             <label className="block text-gray-700">Email</label>
                             <div className="relative">
-                                <FaEnvelope className="absolute left-3 top-3 text-gray-500" />
+                                
                                 <input
                                     type="email"
                                     placeholder="Enter your email"
@@ -68,7 +68,7 @@ export default function Login() {
                         <div>
                             <label className="block text-gray-700">Password</label>
                             <div className="relative">
-                                <FaLock className="absolute left-3 top-3 text-gray-500" />
+                                
                                 <input
                                     type="password"
                                     placeholder="Enter your password"
@@ -104,11 +104,6 @@ export default function Login() {
 
                         {/* Google Login */}
                         <button className="w-full flex justify-center items-center border py-2 rounded-lg hover:bg-gray-200">
-                            <img
-                                src="/images/google-icon.png"
-                                alt="Google Login"
-                                className="w-5 h-5 mr-2"
-                            />
                             Continue with Google
                         </button>
                     </form>
@@ -116,7 +111,7 @@ export default function Login() {
                     {/* Signup Link */}
                     <p className="text-center text-gray-700">
                         Have an account?{" "}
-                        <a href="#" className="text-blue-500 font-bold">
+                        <a href="/sign-up" className="text-blue-500 font-bold">
                             Signup
                         </a>
                     </p>

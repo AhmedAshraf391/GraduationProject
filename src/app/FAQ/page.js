@@ -105,32 +105,34 @@ export default function FAQ() {
             </section>
 
             {/* Footer */}
-            <footer className="py-10 px-5 bg-gray-800 text-white">
+            <footer className="py-10 px-5 bg-gray-200 text-stone-700">
                 <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
                     <div>
                         <h3 className="font-bold text-lg">MIZAN</h3>
-                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                        <p>
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
                     </div>
                     <div>
                         <h3 className="font-bold text-lg">Quick Links</h3>
                         <ul>
-                            <li>Home</li>
-                            <li>Our Services</li>
-                            <li>Contact Us</li>
-                            <li>About Us</li>
-                            <li>FAQ</li>
+                            <li><Link href="/home">Home</Link></li>
+                            <li><Link href="/services">Our Services</Link></li>
+                            <li><Link href="/contact-us">Contact Us</Link></li>
+                            <li><Link href="/about-us">About Us</Link></li>
+                            <li><Link href="/faq">FAQ</Link></li>
                         </ul>
                     </div>
                     <div>
                         <h3 className="font-bold text-lg">Contact Info</h3>
                         <p>Lorem Ipsum, Cairo, Egypt</p>
                         <p>01148113314</p>
-                        <div className="flex space-x-4 mt-4">
+                        {/* <div className="flex space-x-4 mt-4">
                             <span>FB</span>
                             <span>IG</span>
                             <span>TW</span>
                             <span>LN</span>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </footer>

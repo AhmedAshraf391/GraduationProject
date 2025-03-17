@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useState } from "react";
 
@@ -32,11 +33,12 @@ export default function VerifyOTP() {
                 {/* Left Side Illustration */}
                 <div className="hidden md:block w-1/2">
                     <img
-                        src="/images/otp-verification.png"
+                        src="/images/check-email.png"
                         alt="OTP Verification"
                         className="w-full"
                     />
                 </div>
+
 
                 {/* Right Side Form */}
                 <div className="w-full md:w-1/2">
