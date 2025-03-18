@@ -1,4 +1,5 @@
 "use client";
+import { Search, Mail, Heart, Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState, useEffect } from "react";
@@ -36,7 +37,7 @@ export default function AboutUs() {
 
                     {/* Navigation Links */}
                     <ul
-                        className={`hidden md:flex ml-8 space-x-6 ${scrolled ? "text-gray-300" : "text-white"
+                        className={`hidden md:flex ml-16 space-x-6 ${scrolled ? "text-gray-300" : "text-white"
                             } font-medium`}
                     >
                         {["Home", "Our Services", "Contact us", "About us", "FAQ"].map(
@@ -61,12 +62,12 @@ export default function AboutUs() {
                                 placeholder="Search"
                                 className="bg-transparent border border-white text-white text-sm px-4 py-2 rounded-full focus:outline-none  "
                             />
-                            {/* <FiSearch className="absolute right-3 top-2 text-gray-400" /> */}
+                            <Search className="absolute right-3 top-2 text-gray-400" />
                         </div>
 
                         {/* Icons */}
-                        {/* <FiMessageCircle className="text-xl hover:text-blue-400 cursor-pointer" /> */}
-                        {/* <FiHeart className="text-xl hover:text-blue-400 cursor-pointer" /> */}
+                        <Mail className="hover:text-gray-400 text-white cursor-pointer" />
+                        <Heart className="hover:text-gray-400 text-white cursor-pointer" />
 
                         {/* Profile Image */}
                         <img
@@ -120,34 +121,36 @@ export default function AboutUs() {
             </section>
 
             {/* Footer Section */}
-            <footer className="py-10 px-5 bg-gray-200 text-stone-700">
+            <footer className="py-10 px-5 bg-gray-800 text-white">
                 <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-                    <div>
-                        <h3 className="font-bold text-lg">MIZAN</h3>
-                        <p>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                    <div className="space-y-1">
+                        <h3 className="font-bold text-3xl">MIZAN</h3>
+                        <p className="text-2xl">
+                            Your Trusted Legal Patener
                         </p>
                     </div>
                     <div>
                         <h3 className="font-bold text-lg">Quick Links</h3>
-                        <ul>
-                            <li><Link href="/home">Home</Link></li>
-                            <li><Link href="/services">Our Services</Link></li>
-                            <li><Link href="/contact-us">Contact Us</Link></li>
-                            <li><Link href="/about-us">About Us</Link></li>
-                            <li><Link href="/faq">FAQ</Link></li>
+                        <ul className="space-y-2">
+                            <li><Link href="/home" className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">Home</Link></li>
+                            <li><Link href="/our-services" className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">Our Services</Link></li>
+                            <li><Link href="/contact-us" className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">Contact Us</Link></li>
+                            <li><Link href="/about-us" className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">About Us</Link></li>
+                            <li><Link href="/faq" className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">FAQ</Link></li>
                         </ul>
                     </div>
-                    <div>
+                    <div className="space-y-2">
                         <h3 className="font-bold text-lg">Contact Info</h3>
-                        <p>Lorem Ipsum, Cairo, Egypt</p>
+                        <p>Maadi, Cairo, Egypt</p>
                         <p>01148113314</p>
-                        {/* <div className="flex space-x-4 mt-4">
-                            <span>FB</span>
-                            <span>IG</span>
-                            <span>TW</span>
-                            <span>LN</span>
-                        </div> */}
+                        <div className="flex space-x-4 mt-4">
+                            <ul className="flex items-center space-x-3">
+                                <li className="hover:text-gray-400 cursor-pointer"><Facebook /></li>
+                                <li className="hover:text-gray-400 cursor-pointer"><Instagram /></li>
+                                <li className="hover:text-gray-400 cursor-pointer"><Twitter /></li>
+                                <li className="hover:text-gray-400 cursor-pointer"><Linkedin /></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </footer>

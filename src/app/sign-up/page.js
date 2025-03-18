@@ -50,7 +50,7 @@ export default function Signup() {
     };
 
     return (
-        <div className="min-h-screen flex  bg-gray-200">
+        <div className="min-h-screen flex bg-gray-200">
             {/* Left Side Image */}
             <div className="w-1/2 hidden md:block">
                 <img
@@ -79,7 +79,7 @@ export default function Signup() {
                                     type="text"
                                     name="name"
                                     placeholder="Enter your name"
-                                    className={`w-full pl-10 p-2 border ${error.name ? "border-red-500" : "border-gray-300"
+                                    className={`w-full  text-gray-800 pl-10 p-2 border ${error.name ? "border-red-500" : "border-gray-300"
                                         } rounded-lg`}
                                     value={formData.name}
                                     onChange={handleChange}
@@ -97,7 +97,7 @@ export default function Signup() {
                                     type="email"
                                     name="email"
                                     placeholder="Enter your email"
-                                    className={`w-full pl-10 p-2 border ${error.email ? "border-red-500" : "border-gray-300"
+                                    className={`w-full  text-gray-900 pl-10 p-2 border ${error.email ? "border-red-500" : "border-gray-300"
                                         } rounded-lg`}
                                     value={formData.email}
                                     onChange={handleChange}
@@ -115,7 +115,7 @@ export default function Signup() {
                                     type="text"
                                     name="phone"
                                     placeholder="Enter your phone number"
-                                    className={`w-full pl-10 p-2 border ${error.phone ? "border-red-500" : "border-gray-300"
+                                    className={`w-full text-gray-900 pl-10 p-2 border ${error.phone ? "border-red-500" : "border-gray-300"
                                         } rounded-lg`}
                                     value={formData.phone}
                                     onChange={handleChange}
@@ -133,7 +133,7 @@ export default function Signup() {
                                     type="password"
                                     name="password"
                                     placeholder="Enter your password"
-                                    className={`w-full pl-10 p-2 border ${error.password ? "border-red-500" : "border-gray-300"
+                                    className={`w-full text-gray-900 pl-10 p-2 border ${error.password ? "border-red-500" : "border-gray-300"
                                         } rounded-lg`}
                                     value={formData.password}
                                     onChange={handleChange}
@@ -151,7 +151,7 @@ export default function Signup() {
                                     type="password"
                                     name="confirmPassword"
                                     placeholder="Confirm your password"
-                                    className={`w-full pl-10 p-2 border ${error.confirmPassword ? "border-red-500" : "border-gray-300"
+                                    className={`w-full text-gray-900 pl-10 p-2 border ${error.confirmPassword ? "border-red-500" : "border-gray-300"
                                         } rounded-lg`}
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
