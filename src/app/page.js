@@ -26,10 +26,12 @@ export default function Login() {
                 alert("Login successful!");
                 // Redirect user after successful login (modify as needed)
                 window.location.href = "/home";
-            } else {
+            }
+            else {
                 setError(data.message || "Invalid email or password");
             }
-        } catch (err) {
+        } 
+        catch (err) {
             setError("An error occurred. Please try again.");
         }
 
