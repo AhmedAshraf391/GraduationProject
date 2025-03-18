@@ -1,41 +1,101 @@
-import Link from "next/link";
+"use client";
+import { useState, useEffect } from "react";
+import Link from 'next/link';
+import { throttle } from "lodash";
 
 export default function FAQ() {
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = throttle(() => {
+            setScrolled(window.scrollY > 100);
+        }, 200); // Fires at most once every 200ms
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900">
             {/* Navbar */}
-            <nav className="flex justify-between items-center p-5 bg-gray-800 text-white">
-                <div className="text-2xl font-bold">MIZAN</div>
-                <ul className="flex space-x-6">
-                    <li>
-                        <Link href="/home" className="hover:text-teal-400 cursor-pointer">Home</Link>
-                    </li>
-                    <li>
-                        <Link href="/our-services" className="hover:text-teal-400 cursor-pointer">Our Services</Link>
-                    </li>
-                    <li>
-                        <Link href="/contact-us" className="hover:text-teal-400 cursor-pointer">Contact Us</Link>
-                    </li>
-                    <li>
-                        <Link href="/about-us" className="hover:text-teal-400 cursor-pointer">About Us</Link>
-                    </li>
-                    <li>
-                        <Link href="/faq" className="hover:text-teal-400 cursor-pointer">FAQ</Link>
-                    </li>
-                </ul>
+            <nav
+                className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-gray-900 shadow-lg" : "bg-transparent"
+                    }`}
+            >
+
+                {/* Navbar Container */}
+                <div className="container mx-auto px-6 py-3 flex justify-between items-center">
+                    {/* Logo */}
+                    <div className="flex ml-16 items-center space-x-2 text-2xl font-medium">
+                        <span className={`${scrolled ? "text-white" : "text-gray-300"}`}>
+                            MIZAN
+                        </span>
+                    </div>
+
+                    {/* Navigation Links */}
+                    <ul
+                        className={`hidden md:flex ml-8 space-x-6 ${scrolled ? "text-gray-300" : "text-white"
+                            } font-medium`}
+                    >
+                        {["Home", "Our Services", "Contact us", "About us", "FAQ"].map(
+                            (item, index) => (
+                                <li key={index}>
+                                    <Link href={`/${item.toLowerCase().replace(/\s/g, "-")}`}>
+                                        <span className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">
+                                            {item}
+                                        </span>
+                                    </Link>
+                                </li>
+                            )
+                        )}
+                    </ul>
+
+                    {/* Right Section: Search & Icons */}
+                    <div className="flex items-center space-x-4">
+                        {/* Search Bar */}
+                        <div className="relative">
+                            <input
+                                type="text"
+                                placeholder="Search"
+                                className="bg-transparent border border-white text-white text-sm px-4 py-2 rounded-full focus:outline-none  "
+                            />
+                            {/* <FiSearch className="absolute right-3 top-2 text-gray-400" /> */}
+                        </div>
+
+                        {/* Icons */}
+                        {/* <FiMessageCircle className="text-xl hover:text-blue-400 cursor-pointer" /> */}
+                        {/* <FiHeart className="text-xl hover:text-blue-400 cursor-pointer" /> */}
+
+                        {/* Profile Image */}
+                        <img
+                            src="images/user-profile.jpg"
+                            alt="User Profile"
+                            className="w-10 h-10 rounded-full border-2 border-gray-600 cursor-pointer"
+                        />
+                    </div>
+                </div>
             </nav>
 
             {/* Hero Section */}
             <section
-                className="text-center py-20 px-5 bg-cover bg-center text-white"
-                style={{ backgroundImage: 'url(/images/faq.jpg)' }}
+                className="relative text-center py-20 px-5 bg-cover bg-center text-white w-full h-[60vh]"
+                style={{ backgroundImage: "url('/images/faq.png')" }}
             >
-                <h1 className="text-4xl font-bold mb-3">FAQs</h1>
-                <p>Find quick answers to common questions about our platform and services</p>
+                {/* Overlay for better readability */}
+                <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+                {/* Content (placed above overlay) */}
+                <div className="relative mt-16 z-10">
+                    <h1 className="text-4xl font-bold mb-3">FAQs</h1>
+                    <p className="max-w-2xl mx-auto">
+                        Find quick answers to common questions about our platform and services.
+                    </p>
+                </div>
             </section>
 
+
             {/* FAQ Section */}
-            <section className="py-20 px-5 bg-white text-gray-900 max-w-6xl mx-auto">
+            <section className="py-20 px-5 my-16 bg-white text-gray-900 max-w-6xl mx-auto">
                 <h2 className="text-center text-3xl font-bold mb-8">Any Questions? We have Got You Covered</h2>
                 <p className="text-center mb-10">
                     Do you have questions about how our platform works or need assistance with a specific service?

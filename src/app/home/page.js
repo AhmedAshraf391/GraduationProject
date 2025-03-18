@@ -1,63 +1,57 @@
-/* eslint-disable jsx-a11y/alt-text */
-/* eslint-disable @next/next/no-img-element */
+"use client";
+import { useState, useEffect } from "react";
 import Link from 'next/link';
+import { throttle } from "lodash";
 
 export default function Home() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = throttle(() => {
+      setScrolled(window.scrollY > 100);
+    }, 200); // Fires at most once every 200ms
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen text-white font-Parkinsans">
-     
+
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 w-full bg-transparent text-white shadow-md z-50">
-        
+      <nav
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-gray-900 shadow-lg" : "bg-transparent"
+          }`}
+      >
+
         {/* Navbar Container */}
         <div className="container mx-auto px-6 py-3 flex justify-between items-center">
-
-          {/* Logo Section */}
-          <div className="flex items-center space-x-2 text-2xl font-medium">
-            <img src="images/mizan-logo.png" alt="Mizan Logo" className="h-8" />
-            <span>MIZAN</span>
+          {/* Logo */}
+          <div className="flex ml-16 items-center space-x-2 text-2xl font-medium">
+            <span className={`${scrolled ? "text-white" : "text-gray-300"}`}>
+              MIZAN
+            </span>
           </div>
 
           {/* Navigation Links */}
-          <ul className="hidden md:flex space-x-6 text-white font-medium">
-            <li>
-              <Link href="/home">
-                <span className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">
-                  Home
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link href="/our-services">
-                <span className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">
-                  Our Services
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact-us">
-                <span className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">
-                  Contact us
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link href="/about-us">
-                <span className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">
-                  About us
-                </span>
-              </Link>
-            </li>
-            <li>
-              <Link href="/faq">
-                <span className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">
-                  FAQ
-                </span>
-              </Link>
-            </li>
+          <ul
+            className={`hidden md:flex ml-8 space-x-6 ${scrolled ? "text-gray-300" : "text-white"
+              } font-medium`}
+          >
+            {["Home", "Our Services", "Contact us", "About us", "FAQ"].map(
+              (item, index) => (
+                <li key={index}>
+                  <Link href={`/${item.toLowerCase().replace(/\s/g, "-")}`}>
+                    <span className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">
+                      {item}
+                    </span>
+                  </Link>
+                </li>
+              )
+            )}
           </ul>
 
-          {/* Right Section: Search Bar & Icons */}
+          {/* Right Section: Search & Icons */}
           <div className="flex items-center space-x-4">
             {/* Search Bar */}
             <div className="relative">
@@ -75,13 +69,14 @@ export default function Home() {
 
             {/* Profile Image */}
             <img
-              src="/user-profile.jpg"
+              src="images/user-profile.jpg"
               alt="User Profile"
-              className="w-8 h-8 rounded-full border-2 border-gray-600 cursor-pointer"
+              className="w-10 h-10 rounded-full border-2 border-gray-600 cursor-pointer"
             />
           </div>
         </div>
       </nav>
+
 
       {/* Hero Section */}
       <section
