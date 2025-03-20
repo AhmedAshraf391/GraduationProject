@@ -88,7 +88,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
         {/* Content with relative positioning */}
-        <div className="relative z-10">
+        <div className="relative top-10 z-10">
           <h1 className="text-4xl font-bold mb-5 mt-16 text-white">
             Your Trusted Partner for Innovative Legal Services
           </h1>

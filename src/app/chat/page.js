@@ -32,7 +32,7 @@ export default function ChatPage() {
 					</div>
 
 					{/* Navigation Links */}
-					<ul className="hidden md:flex space-x-6 text-white font-medium">
+					<ul className="hidden md:flex ml-16 space-x-6 text-white font-medium">
 						<li>
 							<Link href="/home">
 								<span className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">
