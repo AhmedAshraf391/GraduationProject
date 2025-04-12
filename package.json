@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "https-proxy-agent": "^7.0.6",
     "lineicons-react": "^2.0.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.483.0",

@@ -23,8 +23,7 @@ export default function Signup() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // const handleSignup = async (e) => {
-    //     e.preventDefault();
+
     //     setServerError("");
     //     setLoading(true);
 
@@ -94,27 +93,35 @@ export default function Signup() {
         }
 
         try {
-            // Create FormData to send as multipart/form-data
-            const formDataObj = new FormData();
-            formDataObj.append("firstName", formData.firstName);
-            formDataObj.append("lastName", formData.lastName);
-            formDataObj.append("email", formData.email);
-            formDataObj.append("phone", formData.PhoneNumber);
-            formDataObj.append("password", formData.password);
-            formDataObj.append("role", formData.role);
-
-            const response = await fetch("https://localhost:7121/api/auth/register", {
+            const response = await fetch("http://127.0.0.1:7121/api/auth/register", {
                 method: "POST",
-                body: formDataObj,
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                // Disable SSL verification for local testing with Burp Suite
+                mode: "cors",
+                credentials: "include",
+                body: JSON.stringify({
+                    firstName: formData.firstName,
+                    lastName: formData.lastName,
+                    email: formData.email,
+                    phone: formData.PhoneNumber,
+                    password: formData.password,
+                    role: formData.role,
+                }),
+                agent: proxyAgent, 
             });
 
-            if (!response.ok) {
+            if (response.status === 201) {
+                const responseData = await response.json();
+                console.log("Created successfully:", responseData);
+                alert("Signup successful! Redirecting to login...");
+                router.push("/verify-email");
+            } else {
                 const errorData = await response.json();
                 throw new Error(errorData.message || "Signup failed");
             }
-
-            alert("Signup successful! Redirecting to login...");
-            router.push("/verify-email");
         } catch (error) {
             setServerError(error.message);
         }
