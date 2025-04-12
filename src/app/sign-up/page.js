@@ -6,9 +6,10 @@ export default function Signup() {
     const router = useRouter();
 
     const [formData, setFormData] = useState({
-        name: "",
+        firstName: "",
+        lastName: "",
         email: "",
-        phone: "",
+        PhoneNumber: "",
         password: "",
         confirmPassword: "",
         role: "",
@@ -22,6 +23,56 @@ export default function Signup() {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
+    // const handleSignup = async (e) => {
+    //     e.preventDefault();
+    //     setServerError("");
+    //     setLoading(true);
+
+    //     let errors = {};
+
+    //     if (formData.firstName.length < 3) errors.firstName = "Enter a valid first name";
+    //     if (formData.lastName.length < 3) errors.lastName = "Enter a valid last name";
+    //     if (!formData.email.includes("@")) errors.email = "Enter a valid email";
+    //     if (formData.phone.length < 10) errors.phone = "Enter a valid phone number";
+    //     if (formData.password.length < 6) errors.password = "Password must be at least 6 characters";
+    //     if (formData.password !== formData.confirmPassword) errors.confirmPassword = "Passwords do not match";
+
+    //     setError(errors);
+    //     if (Object.keys(errors).length > 0) {
+    //         setLoading(false);
+    //         return;
+    //     }
+
+    //     try {
+    //         //  Convert form data into FormData object
+    //         const formDataObj = new FormData();
+    //         formDataObj.append("firstName", formData.firstName);
+    //         formDataObj.append("lastName", formData.lastName);
+    //         formDataObj.append("email", formData.email);
+    //         formDataObj.append("phone", formData.phone);
+    //         formDataObj.append("password", formData.password);
+    //         formDataObj.append("role", formData.role);
+
+    //         const response = await fetch("https://localhost:7121/register", {
+    //             method: "POST",
+    //             body: formDataObj,
+    //         });
+
+    //         const data = await response.json();
+
+    //         if (!response.ok) {
+    //             throw new Error(data.message || "Signup failed");
+    //         }
+
+    //         alert("Signup successful! Redirecting to login...");
+    //         router.push("/login"); // Redirect to login page
+
+    //     } catch (error) {
+    //         setServerError(error.message);
+    //     }
+
+    //     setLoading(false);
+    // };
     const handleSignup = async (e) => {
         e.preventDefault();
         setServerError("");
@@ -29,9 +80,10 @@ export default function Signup() {
 
         let errors = {};
 
-        if (formData.name.length < 3) errors.name = "Enter a valid name";
+        if (formData.firstName.length < 3) errors.firstName = "Enter a valid first name";
+        if (formData.lastName.length < 3) errors.lastName = "Enter a valid last name";
         if (!formData.email.includes("@")) errors.email = "Enter a valid email";
-        if (formData.phone.length < 10) errors.phone = "Enter a valid phone number";
+        if (formData.PhoneNumber.length < 10) errors.PhoneNumber = "Enter a valid phone number";
         if (formData.password.length < 6) errors.password = "Password must be at least 6 characters";
         if (formData.password !== formData.confirmPassword) errors.confirmPassword = "Passwords do not match";
 
@@ -42,27 +94,27 @@ export default function Signup() {
         }
 
         try {
-            const response = await fetch("https://virtserver.swaggerhub.com/mizan-690/MizanGraduationAPI/1.0.0/api/auth/register'", {
+            // Create FormData to send as multipart/form-data
+            const formDataObj = new FormData();
+            formDataObj.append("firstName", formData.firstName);
+            formDataObj.append("lastName", formData.lastName);
+            formDataObj.append("email", formData.email);
+            formDataObj.append("phone", formData.PhoneNumber);
+            formDataObj.append("password", formData.password);
+            formDataObj.append("role", formData.role);
+
+            const response = await fetch("https://localhost:7121/api/auth/register", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    name: formData.name,
-                    email: formData.email,
-                    phone: formData.phone,
-                    password: formData.password,
-                    role: formData.role
-                }),
+                body: formDataObj,
             });
 
-            const data = await response.json();
-
             if (!response.ok) {
-                throw new Error(data.message || "Signup failed");
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Signup failed");
             }
 
             alert("Signup successful! Redirecting to login...");
-            router.push("/login"); // Redirect to login page
-
+            router.push("/verify-email");
         } catch (error) {
             setServerError(error.message);
         }
@@ -87,18 +139,32 @@ export default function Signup() {
 
                     {/* Form */}
                     <form onSubmit={handleSignup} className="space-y-4">
-                        {/* Name Input */}
+                        {/* First Name Input */}
                         <div>
-                            <label className="block text-gray-700">Name</label>
+                            <label className="block text-gray-700">First Name</label>
                             <input
                                 type="text"
-                                name="name"
-                                placeholder="Enter your name"
-                                className={`w-full text-gray-900 p-2 border ${error.name ? "border-red-500" : "border-gray-300"} rounded-lg`}
-                                value={formData.name}
+                                name="firstName"
+                                placeholder="Enter your first name"
+                                className={`w-full text-gray-900 p-2 border ${error.firstName ? "border-red-500" : "border-gray-300"} rounded-lg`}
+                                value={formData.firstName}
                                 onChange={handleChange}
                             />
-                            {error.name && <p className="text-red-500 text-sm">{error.name}</p>}
+                            {error.firstName && <p className="text-red-500 text-sm">{error.firstName}</p>}
+                        </div>
+
+                        {/* Last Name Input */}
+                        <div>
+                            <label className="block text-gray-700">Last Name</label>
+                            <input
+                                type="text"
+                                name="lastName"
+                                placeholder="Enter your last name"
+                                className={`w-full text-gray-900 p-2 border ${error.lastName ? "border-red-500" : "border-gray-300"} rounded-lg`}
+                                value={formData.lastName}
+                                onChange={handleChange}
+                            />
+                            {error.lastName && <p className="text-red-500 text-sm">{error.lastName}</p>}
                         </div>
 
                         {/* Email Input */}
@@ -187,10 +253,13 @@ export default function Signup() {
                         {/* Signup Button */}
                         <button
                             type="submit"
+                            href="/verify-email"
                             className="w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900"
                             disabled={loading}
                         >
-                            {loading ? "Signing up..." : "Signup"}
+                            <a href="/verify-email" className="text-white">
+                                {loading ? "Signing up..." : "Signup"}
+                            </a>
                         </button>
                     </form>
                 </div>
@@ -198,5 +267,3 @@ export default function Signup() {
         </div>
     );
 }
-
-
