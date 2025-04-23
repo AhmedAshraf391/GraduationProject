@@ -164,7 +164,7 @@ export default function Signup() {
               <input
                 type="password"
                 name="confirmPassword"
-                placeholder="Confirm your password"
+                placeholder="Confirm  your password"
                 className={`w-full text-gray-900 p-2 border ${error.confirmPassword ? "border-red-500" : "border-gray-300"} rounded-lg`}
                 value={formData.confirmPassword}
                 onChange={handleChange}
