@@ -116,9 +116,9 @@ export default function OurServices() {
           </div>
 
           <div>
-            <h3 className="font-semibold mb-3">Service Area</h3>
+            <h3 className="font-semibold mb-3">Specialization</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {['Civil Cases', 'Criminal Cases', 'Insurance Claims', 'Family Law', 'Employment Law', 'Intellectual Property'].map((item) => (
+              {['Civil Cases', 'Criminal Cases', 'Insurance Claims', 'Family Law', 'Employment Law', 'Intellectual Property', 'Real Estate Disputes'].map((item) => (
                 <label key={item}><input type="checkbox" onChange={() => handleCheckboxChange("serviceArea", item)} /> {item}</label>
               ))}
             </div>
@@ -142,7 +142,7 @@ export default function OurServices() {
         </div>
       </section>
 
-     
+
 
       <footer className="py-10 px-5 bg-gray-800 text-white">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
