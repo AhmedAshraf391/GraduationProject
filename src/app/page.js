@@ -7,12 +7,14 @@ export default function Login() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleLogin = async () => {
+    const handleLogin = async (e) => {
+        e.preventDefault();  // Prevent default form submission (which causes a page refresh)
+
         setError("");
         setLoading(true);
 
         try {
-            const response = await fetch("/api/login", {
+            const response = await fetch("https://mizan-grad-project.runasp.net/api/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -26,17 +28,16 @@ export default function Login() {
                 alert("Login successful!");
                 // Redirect user after successful login (modify as needed)
                 window.location.href = "/home";
-            }
-            else {
+            } else {
                 setError(data.message || "Invalid email or password");
             }
-        }
-        catch (err) {
+        } catch (err) {
             setError("An error occurred. Please try again.");
         }
 
         setLoading(false);
     };
+
     return (
         <div className="min-h-screen flex h-screen bg-gray-200">
             {/* Left Side Image */}
@@ -53,7 +54,7 @@ export default function Login() {
                 <div className="max-w-md w-full space-y-6 p-8 bg-white rounded-lg shadow-md">
                     <h2 className="text-3xl font-bold text-gray-900 text-center">Login</h2>
                     <p className="text-gray-500 text-center">
-                        Create your account in just few steps
+                        Create your account in just a few steps
                     </p>
 
                     {/* Form */}
@@ -62,11 +63,10 @@ export default function Login() {
                         <div>
                             <label className="block text-gray-700">Email</label>
                             <div className="relative">
-
                                 <input
                                     type="email"
                                     placeholder="Enter your email"
-                                    className={`w-full pl-10 p-2 border ${error.email ? "border-red-500" : "border-gray-300"
+                                    className={`w-full pl-10 text-gray-900 p-2 border ${error.email ? "border-red-500" : "border-gray-300"
                                         } rounded-lg`}
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
@@ -81,11 +81,10 @@ export default function Login() {
                         <div>
                             <label className="block text-gray-700">Password</label>
                             <div className="relative">
-
                                 <input
                                     type="password"
                                     placeholder="Enter your password"
-                                    className={`w-full pl-10 p-2 border ${error.password ? "border-red-500" : "border-gray-300"
+                                    className={`w-full pl-10 text-gray-900 p-2 border ${error.password ? "border-red-500" : "border-gray-300"
                                         } rounded-lg`}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
@@ -112,22 +111,20 @@ export default function Login() {
                             type="submit"
                             className="w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900"
                         >
-                            <a href="/home" className="text-white">
-                                Login
-                            </a>
+                            Login
                         </button>
 
                         {/* Google Login */}
-                        <button className="w-full flex justify-center items-center border py-2 rounded-lg hover:bg-gray-200">
+                        <button className="w-full flex justify-center text-gray-900 items-center border py-2 rounded-lg hover:bg-gray-200">
                             Continue with Google
                         </button>
                     </form>
 
                     {/* Signup Link */}
                     <p className="text-center text-gray-700">
-                        Have an account?{" "}
+                        Don't have an account?{" "}
                         <a href="/sign-up" className="text-blue-500 font-bold">
-                            Signup
+                            Sign up
                         </a>
                     </p>
                 </div>
