@@ -1,11 +1,10 @@
-// src/app/our-services/page.js
-
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from 'next/link';
-import { Search, Mail, Heart, Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { throttle } from "lodash";
+import { Search, Mail, Heart, Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
 
 export default function OurServices() {
   const [scrolled, setScrolled] = useState(false);
@@ -14,7 +13,7 @@ export default function OurServices() {
     serviceArea: [],
     location: "",
   });
-  const [lawyers, setLawyers] = useState([]);
+  const router = useRouter();
 
   const egyptGovernorates = [
     "Cairo", "Giza", "Alexandria", "Aswan", "Asyut", "Beheira", "Beni Suef", "Dakahlia",
@@ -34,6 +33,10 @@ export default function OurServices() {
 
   const handleCheckboxChange = (type, value) => {
     setFilters((prev) => {
+      if (type === "serviceType") {
+        const isSelected = prev[type].includes(value);
+        return { ...prev, [type]: isSelected ? [] : [value] };
+      }
       const updatedArray = prev[type].includes(value)
         ? prev[type].filter((v) => v !== value)
         : [...prev[type], value];
@@ -45,28 +48,24 @@ export default function OurServices() {
     setFilters((prev) => ({ ...prev, [type]: value }));
   };
 
-  const handleSubmit = async () => {
-    try {
-      const specialization = filters.serviceType[0] || "";
-      const location = filters.location;
+  const handleSubmit = () => {
+    const specialization = filters.serviceType[0] || "";
+    const location = filters.location || "";
 
-      const response = await fetch("https://mizan-grad-project.runasp.net/api/Filter/filter-lawyers", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ specialization, location }),
-      });
-
-      const result = await response.json();
-
-      if (Array.isArray(result) && result.length > 0) {
-        setLawyers(result);
-      } else {
-        setLawyers([]);
-      }
-    } catch (error) {
-      console.error("Error filtering lawyers:", error);
-      setLawyers([]);
+    if (!specialization && !location) {
+      alert("Please select at least a service type or a location before searching.");
+      return;
     }
+
+    sessionStorage.setItem('specialization', specialization);
+    sessionStorage.setItem('location', location);
+
+    const queryParams = new URLSearchParams({
+      specialization,
+      location,
+    }).toString();
+
+    router.push(`/lawyers?${queryParams}`);
   };
 
   return (
@@ -77,8 +76,14 @@ export default function OurServices() {
             <span className={`${scrolled ? "text-white" : "text-gray-300"}`}>MIZAN</span>
           </div>
           <ul className={`hidden md:flex ml-16 space-x-6 ${scrolled ? "text-gray-300" : "text-white"} font-medium`}>
-            {['Home', 'Our Services', 'Contact us', 'About us', 'FAQ'].map((item, idx) => (
-              <li key={idx}><Link href={`/${item.toLowerCase().replace(/ /g, '-')}`}>{item}</Link></li>
+            {[
+              { name: 'Home', path: '/home' },
+              { name: 'Our Services', path: '/our-services' },
+              { name: 'Contact us', path: '/contact-us' },
+              { name: 'About us', path: '/about-us' },
+              { name: 'FAQ', path: '/FAQ' }
+            ].map((item, idx) => (
+              <li key={idx}><Link href={item.path}>{item.name}</Link></li>
             ))}
           </ul>
           <div className="flex items-center space-x-4">
@@ -107,26 +112,58 @@ export default function OurServices() {
         <h2 className="text-center text-2xl font-bold mb-5">Choose your legal service easily</h2>
         <div className="space-y-4">
           <div>
-            <h3 className="font-semibold mb-3">Service Type</h3>
+            <h3 className="font-semibold mb-3">Service Type (Select one)</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {['Legal Consultation', 'Legal Document Preparation', 'Legal Representation', 'Online Legal Consultation', 'Corporate Legal Services'].map((item) => (
-                <label key={item}><input type="checkbox" onChange={() => handleCheckboxChange("serviceType", item)} /> {item}</label>
+              {[
+                'Legal Consultation',
+                'Legal Document Preparation',
+                'Legal Representation',
+                'Online Legal Consultation',
+                'Corporate Legal Services'
+              ].map((item) => (
+                <label key={item} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={filters.serviceType.includes(item)}
+                    onChange={() => handleCheckboxChange("serviceType", item)}
+                  />
+                  <span>{item}</span>
+                </label>
               ))}
             </div>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-3">Specialization</h3>
+            <h3 className="font-semibold mb-3">Specialization (Optional, for future use)</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {['Civil Cases', 'Criminal Cases', 'Insurance Claims', 'Family Law', 'Employment Law', 'Intellectual Property', 'Real Estate Disputes'].map((item) => (
-                <label key={item}><input type="checkbox" onChange={() => handleCheckboxChange("serviceArea", item)} /> {item}</label>
+              {[
+                'Civil Cases',
+                'Criminal Cases',
+                'Insurance Claims',
+                'Family Law',
+                'Employment Law',
+                'Intellectual Property',
+                'Real Estate Disputes'
+              ].map((item) => (
+                <label key={item} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={filters.serviceArea.includes(item)}
+                    onChange={() => handleCheckboxChange("serviceArea", item)}
+                  />
+                  <span>{item}</span>
+                </label>
               ))}
             </div>
           </div>
 
           <div>
             <h3 className="font-semibold mb-3">Location</h3>
-            <select className="border p-2 rounded w-full" onChange={(e) => handleInputChange("location", e.target.value)}>
+            <select
+              className="border p-2 rounded w-full"
+              value={filters.location}
+              onChange={(e) => handleInputChange("location", e.target.value)}
+            >
               <option value="">Select Location</option>
               {egyptGovernorates.map((gov) => (
                 <option key={gov} value={gov}>{gov}</option>
@@ -142,8 +179,6 @@ export default function OurServices() {
         </div>
       </section>
 
-
-
       <footer className="py-10 px-5 bg-gray-800 text-white">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
           <div>
@@ -153,8 +188,14 @@ export default function OurServices() {
           <div>
             <h3 className="font-bold mb-2">Quick Links</h3>
             <ul className="space-y-2">
-              {['Home', 'Our Services', 'Contact us', 'About us', 'FAQ'].map((item, idx) => (
-                <li key={idx}><Link href={`/${item.toLowerCase().replace(/ /g, '-')}`}>{item}</Link></li>
+              {[
+                { name: 'Home', path: '/home' },
+                { name: 'Our Services', path: '/our-services' },
+                { name: 'Contact us', path: '/contact-us' },
+                { name: 'About us', path: '/about-us' },
+                { name: 'FAQ', path: '/FAQ' }
+              ].map((item, idx) => (
+                <li key={idx}><Link href={item.path}>{item.name}</Link></li>
               ))}
             </ul>
           </div>
