@@ -1,12 +1,15 @@
 "use client";
 import { Search, Mail, Heart, Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from 'next/link';
 import { throttle } from "lodash";
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
-
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
   useEffect(() => {
     const handleScroll = throttle(() => {
       setScrolled(window.scrollY > 100);
@@ -15,7 +18,15 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   return (
     <div className="min-h-screen text-white font-Parkinsans">
 
@@ -24,7 +35,6 @@ export default function Home() {
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-gray-900 shadow-lg" : "bg-transparent"
           }`}
       >
-
         {/* Navbar Container */}
         <div className="container mx-auto px-6 py-3 flex justify-between items-center">
           {/* Logo */}
@@ -35,21 +45,16 @@ export default function Home() {
           </div>
 
           {/* Navigation Links */}
-          <ul
-            className={`hidden md:flex ml-16 space-x-6 ${scrolled ? "text-gray-300" : "text-white"
-              } font-medium`}
-          >
-            {["Home", "Our Services", "Contact us", "About us", "FAQ"].map(
-              (item, index) => (
-                <li key={index}>
-                  <Link href={`/${item.toLowerCase().replace(/\s/g, "-")}`}>
-                    <span className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">
-                      {item}
-                    </span>
-                  </Link>
-                </li>
-              )
-            )}
+          <ul className={`hidden md:flex ml-16 space-x-6 ${scrolled ? "text-gray-300" : "text-white"} font-medium`}>
+            {[
+              { name: 'Home', path: '/home' },
+              { name: 'Our Services', path: '/our-services' },
+              { name: 'Contact us', path: '/contact-us' },
+              { name: 'About us', path: '/about-us' },
+              { name: 'FAQ', path: '/FAQ' }
+            ].map((item, idx) => (
+              <li key={idx}><Link href={item.path}>{item.name}</Link></li>
+            ))}
           </ul>
 
           {/* Right Section: Search & Icons */}
@@ -69,11 +74,29 @@ export default function Home() {
             <Heart className="hover:text-gray-400 cursor-pointer" />
 
             {/* Profile Image */}
-            <img
-              src="images/user-profile.jpg"
-              alt="User Profile"
-              className="w-10 h-10 rounded-full border-2 border-gray-600 cursor-pointer"
-            />
+            <div className="relative" ref={menuRef}>
+              <img
+                src="/images/user-profile.jpg"
+                alt="User Profile"
+                className="w-10 h-10 rounded-full border-2 border-gray-600 cursor-pointer"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              />
+              {isMenuOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg z-50 animate-fadeInDown">
+                  <div className="px-4 py-2 border-b font-semibold">Ahmed</div>
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      router.push('/');
+                    }}
+                    className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
       </nav>
@@ -286,7 +309,7 @@ export default function Home() {
           </div>
         </div>
       </footer>
-      
+
     </div>
   );
 }
