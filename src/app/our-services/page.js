@@ -15,6 +15,16 @@ export default function OurServices() {
   });
   const router = useRouter();
 
+  const specializationMap = {
+    "Real Estate Disputes": "36324834-8436-453a-a814-cef2558248cc",
+    "Intellectual Property": "3a44d3ff-12c6-44bf-9241-1fb901da7b55",
+    "Employment Law": "4333ac74-6d8d-4963-93ba-a4df668f350a",
+    "Family Law": "65f683c3-b334-49b5-b9f9-d3670798a724",
+    "Civil Cases": "c13aebf7-9dde-4d49-a01a-0b926777577e",
+    "Criminal Cases": "8181668b-4429-4c9b-b3e7-dda87b1530f9",
+    "Insurance Claims": "fad2759a-5dcd-486d-8c37-270e7cfd3c0c",
+  };
+
   const egyptGovernorates = [
     "Cairo", "Giza", "Alexandria", "Aswan", "Asyut", "Beheira", "Beni Suef", "Dakahlia",
     "Damietta", "Faiyum", "Gharbia", "Ismailia", "Kafr El Sheikh", "Luxor", "Matruh",
@@ -49,16 +59,14 @@ export default function OurServices() {
   };
 
   const handleSubmit = () => {
-    const specialization = filters.serviceType[0] || "";
+    const specializationName = filters.serviceArea[0] || "";
+    const specialization = specializationMap[specializationName] || "";
     const location = filters.location || "";
 
     if (!specialization && !location) {
-      alert("Please select at least a service type or a location before searching.");
+      alert("Please select at least a specialization or a location before searching.");
       return;
     }
-
-    sessionStorage.setItem('specialization', specialization);
-    sessionStorage.setItem('location', location);
 
     const queryParams = new URLSearchParams({
       specialization,
@@ -136,15 +144,7 @@ export default function OurServices() {
           <div>
             <h3 className="font-semibold mb-3">Specialization (Optional, for future use)</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {[
-                'Civil Cases',
-                'Criminal Cases',
-                'Insurance Claims',
-                'Family Law',
-                'Employment Law',
-                'Intellectual Property',
-                'Real Estate Disputes'
-              ].map((item) => (
+              {Object.keys(specializationMap).map((item) => (
                 <label key={item} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
