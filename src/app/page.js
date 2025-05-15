@@ -27,19 +27,9 @@ export default function Login() {
             const data = await response.json();
 
             if (response.ok) {
-                const token = data.token;
-                localStorage.setItem("token", token);
-
-                const decoded = jwtDecode(token);
-                const role = decoded.role;
-
                 alert("Login successful!");
+                window.location.href = "/home";
 
-                if (role === "lawyer") {
-                    window.location.href = "/update-profile";
-                } else {
-                    window.location.href = "/home";
-                }
             } else {
                 setError(data.message || "Invalid email or password");
             }
