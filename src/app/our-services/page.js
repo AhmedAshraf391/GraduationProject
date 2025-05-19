@@ -4,16 +4,37 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { throttle } from "lodash";
-import { Search, Mail, Heart, Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
+import { Search, Mail, Heart, Facebook, Instagram, Twitter, Linkedin, AlertCircle } from "lucide-react";
+
+// Feature flags implementation (simplified to be included directly in this file)
+const featureFlags = {
+  ENABLE_ONLINE_CONSULTATION: true,
+  ENABLE_CORPORATE_SERVICES: true,
+  ENABLE_MULTIPLE_SPECIALIZATION_SELECTION: false,
+  ENABLE_DARK_MODE: false,
+  ENABLE_LAWYER_RATINGS: false,
+  ENABLE_APPOINTMENT_BOOKING: false,
+};
 
 export default function OurServices() {
   const [scrolled, setScrolled] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [filters, setFilters] = useState({
     serviceType: [],
     serviceArea: [],
     location: "",
   });
   const router = useRouter();
+
+  // Create service type map based on feature flags
+  const serviceTypeMap = {
+    "Legal Consultation": "legal-consultation",
+    "Legal Document Preparation": "document-preparation",
+    "Legal Representation": "legal-representation",
+    ...(featureFlags.ENABLE_ONLINE_CONSULTATION ? { "Online Legal Consultation": "online-consultation" } : {}),
+    ...(featureFlags.ENABLE_CORPORATE_SERVICES ? { "Corporate Legal Services": "corporate-services" } : {})
+  };
 
   const specializationMap = {
     "Real Estate Disputes": "36324834-8436-453a-a814-cef2558248cc",
@@ -43,10 +64,12 @@ export default function OurServices() {
 
   const handleCheckboxChange = (type, value) => {
     setFilters((prev) => {
-      if (type === "serviceType") {
+      if (type === "serviceType" || (type === "serviceArea" && !featureFlags.ENABLE_MULTIPLE_SPECIALIZATION_SELECTION)) {
+        // For serviceType and serviceArea (when multiple selection is disabled), only allow one selection at a time
         const isSelected = prev[type].includes(value);
         return { ...prev, [type]: isSelected ? [] : [value] };
       }
+      // For other types or when multiple specialization selection is enabled
       const updatedArray = prev[type].includes(value)
         ? prev[type].filter((v) => v !== value)
         : [...prev[type], value];
@@ -59,25 +82,98 @@ export default function OurServices() {
   };
 
   const handleSubmit = () => {
+    // Reset any previous errors
+    setError("");
+
+    // Get service type
+    const serviceTypeName = filters.serviceType[0] || "";
+    const serviceType = serviceTypeMap[serviceTypeName] || "";
+
+    // Get specialization
     const specializationName = filters.serviceArea[0] || "";
     const specialization = specializationMap[specializationName] || "";
+
+    // Get location
     const location = filters.location || "";
 
-    if (!specialization && !location) {
-      alert("Please select at least a specialization or a location before searching.");
+    // Check if at least one filter is selected
+    if (!serviceType && !specialization && !location) {
+      alert("Please select at least one filter criterion before searching.");
       return;
     }
 
-    const queryParams = new URLSearchParams({
-      specialization,
-      location,
-    }).toString();
+    // Build query parameters with all three filters
+    const queryParams = new URLSearchParams();
 
-    router.push(`/lawyers?${queryParams}`);
+    if (serviceType) {
+      queryParams.append("serviceType", serviceType);
+    }
+
+    if (specialization) {
+      queryParams.append("specialization", specialization);
+    }
+
+    if (location) {
+      queryParams.append("location", location);
+    }
+
+    // Debug information if debug mode is enabled
+    if (featureFlags.ENABLE_DEBUG_MODE) {
+      console.log("Filter parameters:", {
+        serviceTypeName,
+        serviceType,
+        specializationName,
+        specialization,
+        location,
+        queryString: queryParams.toString()
+      });
+    }
+
+    // Show loading indicator
+    setLoading(true);
+
+    // Make a direct API call to verify the filter works before navigation
+    fetch(`/api/filter/filter-lawyers`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        specialization: specialization,
+        location: location,
+        serviceType: serviceType
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (featureFlags.ENABLE_DEBUG_MODE) {
+          console.log("API response:", data);
+        }
+
+        // Now navigate to the lawyers page with the filters
+        router.push(`/lawyers?${queryParams.toString()}`);
+      })
+      .catch(err => {
+        console.error("Filter error:", err);
+        setError("An error occurred while filtering. Please try again.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
+  // Apply dark mode if enabled via feature flag
+  const pageBackgroundClass = featureFlags.ENABLE_DARK_MODE
+    ? "bg-gray-900 text-gray-100"
+    : "bg-gray-100 text-gray-900";
+
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-900 font-Parkinsans">
+    <div className={`min-h-screen ${pageBackgroundClass} font-Parkinsans`}>
       <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-gray-900 shadow-lg" : "bg-transparent"}`}>
         <div className="container mx-auto px-6 py-3 flex justify-between items-center">
           <div className="flex ml-16 items-center space-x-2 text-2xl font-medium">
@@ -120,15 +216,9 @@ export default function OurServices() {
         <h2 className="text-center text-2xl font-bold mb-5">Choose your legal service easily</h2>
         <div className="space-y-4">
           <div>
-            <h3 className="font-semibold mb-3">Service Type (Select one)</h3>
+            <h3 className="font-semibold mb-3">Service Type</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {[
-                'Legal Consultation',
-                'Legal Document Preparation',
-                'Legal Representation',
-                'Online Legal Consultation',
-                'Corporate Legal Services'
-              ].map((item) => (
+              {Object.keys(serviceTypeMap).map((item) => (
                 <label key={item} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -142,7 +232,7 @@ export default function OurServices() {
           </div>
 
           <div>
-            <h3 className="font-semibold mb-3">Specialization (Optional, for future use)</h3>
+            <h3 className="font-semibold mb-3">Specialization</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {Object.keys(specializationMap).map((item) => (
                 <label key={item} className="flex items-center space-x-2">
@@ -155,6 +245,9 @@ export default function OurServices() {
                 </label>
               ))}
             </div>
+            {featureFlags.ENABLE_MULTIPLE_SPECIALIZATION_SELECTION && (
+              <p className="text-sm text-gray-500 mt-2">You can select multiple specializations</p>
+            )}
           </div>
 
           <div>
@@ -172,12 +265,77 @@ export default function OurServices() {
           </div>
 
           <div className="flex justify-center mt-6">
-            <button onClick={handleSubmit} className="bg-teal-500 px-6 py-2 text-white rounded-lg hover:bg-teal-600">
-              Find Your Service
+            <button
+              onClick={handleSubmit}
+              className={`bg-teal-500 px-6 py-2 text-white rounded-lg hover:bg-teal-600 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              disabled={loading}
+            >
+              {loading ? 'Searching...' : 'Find Your Service'}
             </button>
           </div>
+
+          {/* Error message */}
+          {error && (
+            <div className="mt-4 p-3 bg-red-100 text-red-700 border border-red-200 rounded flex items-center">
+              <AlertCircle size={16} className="mr-2" />
+              {error}
+            </div>
+          )}
         </div>
       </section>
+
+      {/* Conditionally render lawyer ratings section based on feature flag */}
+      {featureFlags.ENABLE_LAWYER_RATINGS && (
+        <section className="py-10 px-5 max-w-5xl mx-auto bg-white rounded-lg shadow-md mb-12">
+          <h2 className="text-center text-2xl font-bold mb-5">Top Rated Lawyers</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Sample lawyer cards - in production these would be populated from an API */}
+            {[1, 2, 3].map((item) => (
+              <div key={item} className="border rounded-lg p-4 flex flex-col items-center">
+                <div className="w-20 h-20 rounded-full bg-gray-300 mb-3"></div>
+                <h3 className="font-bold">Lawyer Name {item}</h3>
+                <div className="flex text-yellow-500 my-2">
+                  {'★'.repeat(5 - item % 2)}{'☆'.repeat(item % 2)}
+                </div>
+                <p className="text-sm text-gray-600 text-center">Specializing in {Object.keys(specializationMap)[item]}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Conditionally render appointment booking section based on feature flag */}
+      {featureFlags.ENABLE_APPOINTMENT_BOOKING && (
+        <section className="py-10 px-5 max-w-5xl mx-auto bg-white rounded-lg shadow-md mb-12">
+          <h2 className="text-center text-2xl font-bold mb-5">Book an Appointment</h2>
+          <div className="max-w-md mx-auto">
+            <div className="mb-4">
+              <label className="block mb-2">Select Service Type</label>
+              <select className="w-full p-2 border rounded">
+                <option value="">Choose a service</option>
+                {Object.keys(serviceTypeMap).map((service) => (
+                  <option key={service} value={service}>{service}</option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+              <label className="block mb-2">Select Date</label>
+              <input type="date" className="w-full p-2 border rounded" />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-2">Your Name</label>
+              <input type="text" className="w-full p-2 border rounded" placeholder="Enter your name" />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-2">Your Phone</label>
+              <input type="tel" className="w-full p-2 border rounded" placeholder="Enter your phone number" />
+            </div>
+            <button className="w-full bg-teal-500 py-2 text-white rounded-lg hover:bg-teal-600">
+              Request Appointment
+            </button>
+          </div>
+        </section>
+      )}
 
       <footer className="py-10 px-5 bg-gray-800 text-white">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">

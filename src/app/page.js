@@ -1,14 +1,13 @@
 "use client";
 import { useState } from "react";
-import { jwtDecode } from 'jwt-decode';
-
-
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const { login } = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -16,33 +15,17 @@ export default function Login() {
         setLoading(true);
 
         try {
-            const response = await fetch("https://mizan-grad-project.runasp.net/api/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                alert("Login successful!");
-                window.location.href = "/home";
-
-            } else {
-                setError(data.message || "Invalid email or password");
-            }
+            await login(email, password);
+            window.location.href = "/home";
         } catch (err) {
-            setError("An error occurred. Please try again.");
+            setError(err.message);
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     };
 
     return (
         <div className="min-h-screen flex h-screen bg-gray-200">
-            {/* Left Side Image */}
             <div className="w-1/2 hidden md:block">
                 <img
                     src="/images/login.png"
@@ -51,7 +34,6 @@ export default function Login() {
                 />
             </div>
 
-            {/* Right Side Form */}
             <div className="w-full md:w-1/2 flex justify-center items-center">
                 <div className="max-w-md w-full space-y-6 p-8 bg-white rounded-lg shadow-md">
                     <h2 className="text-3xl font-bold text-gray-900 text-center">Login</h2>
@@ -111,7 +93,7 @@ export default function Login() {
                         </button>
                     </form>
 
-                    <p className="text-center text-gray-700">
+                    <p className="text-center text-gray-600">
                         Don't have an account?{" "}
                         <a href="/sign-up" className="text-blue-500 font-bold">
                             Sign up
