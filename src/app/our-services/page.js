@@ -89,12 +89,16 @@ export default function OurServices() {
         const isSelected = prev[type].includes(value);
         return { ...prev, [type]: isSelected ? [] : [value] };
       }
+      else if (type === "serviceArea") {
+        const isSelected = prev[type].includes(value);
+        return { ...prev, [type]: isSelected ? [] : [value] };
+      }
       const updatedArray = prev[type].includes(value)
         ? prev[type].filter((v) => v !== value)
         : [...prev[type], value];
       return { ...prev, [type]: updatedArray };
     });
-  };
+  };  
 
   const handleInputChange = (type, value) => {
     setFilters((prev) => ({ ...prev, [type]: value }));
@@ -185,7 +189,7 @@ export default function OurServices() {
         <h2 className="text-center text-2xl font-bold mb-5">Choose your legal service easily</h2>
         <div className="space-y-4">
           <div>
-            <h3 className="font-semibold mb-3">Service Type (Select one)</h3>
+            <h3 className="font-semibold mb-3">Service Type</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {[
                 'Legal Consultation',
@@ -207,7 +211,7 @@ export default function OurServices() {
           </div>
 
           <div>
-            <h3 className="font-semibold mb-3">Specialization (Optional, for future use)</h3>
+            <h3 className="font-semibold mb-3">Specialization</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {availableSpecializations.map((item) => (
                 <label key={item} className="flex items-center space-x-2">

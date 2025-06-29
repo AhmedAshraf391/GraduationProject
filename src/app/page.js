@@ -55,7 +55,6 @@ export default function Login() {
                     <p className="text-gray-500 text-center">
                         Login to your account
                     </p>
-
                     <form onSubmit={handleLogin} className="space-y-4">
                         <div>
                             <label className="block text-gray-700">Email</label>
@@ -87,8 +86,8 @@ export default function Login() {
 
                         <div className="flex justify-between items-center">
                             <div className="flex items-center">
-                                <input type="checkbox" className="mr-2" />
-                                <label className="text-gray-700">Remember me</label>
+                                <input type="checkbox" className="mr-2" id="dot" />
+                                <label className="text-gray-700" htmlFor="dot">Remember me</label>
                             </div>
                             <a href="/forgot-pass" className="text-blue-500 text-sm">
                                 Forgot password?
