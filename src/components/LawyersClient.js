@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-import { Search, Mail, Heart, Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
+import { Search, Mail, Heart } from "lucide-react";
 import Link from "next/link";
 import { throttle } from "lodash";
 import { useRouter } from 'next/navigation';
@@ -262,7 +262,7 @@ export default function LawyersClient() {
 						>
 							<div className="flex flex-col items-center">
 								<img
-									src={lawyer.profileImage || "/images/default-lawyer.png"}
+									src={lawyer.profileImage || "/images/10035116.jpg"}
 									alt={lawyer.name}
 									className="w-24 h-24 rounded-full object-cover border-2 border-teal-500 mb-4"
 									onError={(e) => (e.target.src = "/images/default-lawyer.png")}
