@@ -25,7 +25,7 @@ export default function Login() {
             });
 
             const data = await response.json();
-
+            console.log(response)
             if (response.ok) {
                 alert("Login successful!");
                 window.location.href = "/home";

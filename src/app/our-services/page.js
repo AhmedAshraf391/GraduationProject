@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { throttle } from "lodash";
 import { Search, Mail, Heart, Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
 
+const BASE_URL = "https://mizan-grad-project.runasp.net/api";
+
 export default function OurServices() {
   const [scrolled, setScrolled] = useState(false);
   const [filters, setFilters] = useState({
@@ -13,24 +15,11 @@ export default function OurServices() {
     serviceArea: [],
     location: "",
   });
+  const [availableSpecializations, setAvailableSpecializations] = useState([]);
+  const [availableLocations, setAvailableLocations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const router = useRouter();
-
-  const specializationMap = {
-    "Real Estate Disputes": "36324834-8436-453a-a814-cef2558248cc",
-    "Intellectual Property": "3a44d3ff-12c6-44bf-9241-1fb901da7b55",
-    "Employment Law": "4333ac74-6d8d-4963-93ba-a4df668f350a",
-    "Family Law": "65f683c3-b334-49b5-b9f9-d3670798a724",
-    "Civil Cases": "c13aebf7-9dde-4d49-a01a-0b926777577e",
-    "Criminal Cases": "8181668b-4429-4c9b-b3e7-dda87b1530f9",
-    "Insurance Claims": "fad2759a-5dcd-486d-8c37-270e7cfd3c0c",
-  };
-
-  const egyptGovernorates = [
-    "Cairo", "Giza", "Alexandria", "Aswan", "Asyut", "Beheira", "Beni Suef", "Dakahlia",
-    "Damietta", "Faiyum", "Gharbia", "Ismailia", "Kafr El Sheikh", "Luxor", "Matruh",
-    "Minya", "Monufia", "New Valley", "North Sinai", "Port Said", "Qalyubia", "Qena",
-    "Red Sea", "Sharqia", "Sohag", "South Sinai", "Suez"
-  ];
 
   useEffect(() => {
     const handleScroll = throttle(() => {
@@ -39,6 +28,60 @@ export default function OurServices() {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Fetch specializations and locations with retry
+  useEffect(() => {
+    const fetchMetadata = async (retryCount = 2) => {
+      for (let attempt = 1; attempt <= retryCount; attempt++) {
+        try {
+          const [specializationsResponse, locationsResponse] = await Promise.all([
+            fetch(`https://mizan-grad-project.runasp.net/api/Specialization/get-specializations`),
+            fetch(`https://mizan-grad-project.runasp.net/api/Locations/get-locations`),
+          ]);
+
+          console.log(`Attempt ${attempt} - Specializations Response Status:`, specializationsResponse.status);
+          console.log(`Attempt ${attempt} - Locations Response Status:`, locationsResponse.status);
+
+          if (!specializationsResponse.ok) {
+            throw new Error(`Specializations fetch failed: ${specializationsResponse.status} ${specializationsResponse.statusText}`);
+          }
+          if (!locationsResponse.ok) {
+            throw new Error(`Locations fetch failed: ${locationsResponse.status} ${locationsResponse.statusText}`);
+          }
+
+          const specializationsData = await specializationsResponse.json();
+          const locationsData = await locationsResponse.json();
+          console.log("Fetched Specializations Data:", specializationsData);
+          console.log("Fetched Locations Data:", locationsData);
+
+          const specs = specializationsData.specializations || [];
+          if (!Array.isArray(specs)) {
+            throw new Error("Specializations data is not an array");
+          }
+          setAvailableSpecializations(specs.map(item => item.normalizedName));
+
+          const locs = locationsData.locations || [];
+          if (!Array.isArray(locs)) {
+            throw new Error("Locations data is not an array");
+          }
+          setAvailableLocations(locs.map(item => item.normalizedName));
+
+          setError(null); // Clear error on success
+          break; // Exit loop on success
+        } catch (err) {
+          console.error(`Attempt ${attempt} - Metadata fetch error details:`, err.message);
+          if (attempt === retryCount) {
+            setError(err.message.includes("fetch failed") ? err.message : `Metadata fetch error after ${retryCount} attempts: ${err.message}`);
+          } else {
+            await new Promise(resolve => setTimeout(resolve, 1000 * attempt)); // Exponential backoff
+          }
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchMetadata();
   }, []);
 
   const handleCheckboxChange = (type, value) => {
@@ -60,7 +103,7 @@ export default function OurServices() {
 
   const handleSubmit = () => {
     const specializationName = filters.serviceArea[0] || "";
-    const specialization = specializationMap[specializationName] || "";
+    const specialization = specializationName; // Use the normalized name directly
     const location = filters.location || "";
 
     if (!specialization && !location) {
@@ -75,6 +118,29 @@ export default function OurServices() {
 
     router.push(`/lawyers?${queryParams}`);
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-20">
+        <h1 className="text-2xl text-red-600 mb-4">Error fetching options</h1>
+        <p className="text-gray-500">{error}</p>
+        <Link
+          href="/"
+          className="mt-6 inline-block bg-teal-500 text-white px-6 py-2 rounded hover:bg-teal-600"
+        >
+          Go Back
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 font-Parkinsans">
@@ -144,7 +210,7 @@ export default function OurServices() {
           <div>
             <h3 className="font-semibold mb-3">Specialization (Optional, for future use)</h3>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {Object.keys(specializationMap).map((item) => (
+              {availableSpecializations.map((item) => (
                 <label key={item} className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -165,8 +231,10 @@ export default function OurServices() {
               onChange={(e) => handleInputChange("location", e.target.value)}
             >
               <option value="">Select Location</option>
-              {egyptGovernorates.map((gov) => (
-                <option key={gov} value={gov}>{gov}</option>
+              {availableLocations.map((loc) => (
+                <option key={loc} value={loc}>
+                  {loc}
+                </option>
               ))}
             </select>
           </div>
