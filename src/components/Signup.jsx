@@ -17,43 +17,47 @@ export default function Signup() {
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState("");
-  const egyptGovernorates = [
-    "Cairo",
-    "Giza",
-    "Alexandria",
-    "Aswan",
-    "Asyut",
-    "Beheira",
-    "Beni Suef",
-    "Dakahlia",
-    "Damietta",
-    "Faiyum",
-    "Gharbia",
-    "Ismailia",
-    "Kafr El Sheikh",
-    "Luxor",
-    "Matruh",
-    "Minya",
-    "Monufia",
-    "New Valley",
-    "North Sinai",
-    "Port Said",
-    "Qalyubia",
-    "Qena",
-    "Red Sea",
-    "Sharqia",
-    "Sohag",
-    "South Sinai",
-    "Suez",
-  ];
 
-  const specializations = [
-    "Legal Consultation",
-    "Legal Document Preparation",
-    "Legal Representation",
-    "Online Legal Consultation",
-    "Corporate Legal Services",
-  ];
+
+  // const egyptGovernorates = [
+  //   "Cairo",
+  //   "Giza",
+  //   "Alexandria",
+  //   "Aswan",
+  //   "Asyut",
+  //   "Beheira",
+  //   "Beni Suef",
+  //   "Dakahlia",
+  //   "Damietta",
+  //   "Faiyum",
+  //   "Gharbia",
+  //   "Ismailia",
+  //   "Kafr El Sheikh",
+  //   "Luxor",
+  //   "Matruh",
+  //   "Minya",
+  //   "Monufia",
+  //   "New Valley",
+  //   "North Sinai",
+  //   "Port Said",
+  //   "Qalyubia",
+  //   "Qena",
+  //   "Red Sea",
+  //   "Sharqia",
+  //   "Sohag",
+  //   "South Sinai",
+  //   "Suez",
+  // ];
+
+  // const specializations = [
+  //   "Legal Consultation",
+  //   "Legal Document Preparation",
+  //   "Legal Representation",
+  //   "Online Legal Consultation",
+  //   "Corporate Legal Services",
+  // ];
+
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -108,7 +112,7 @@ export default function Signup() {
       if (response.status === 201) {
         console.log("Created successfully:", data);
         alert("Signup successful! Redirecting to verify email...");
-        // 👇 Pass email in URL when navigating
+
         router.push(
           `/verify-email?email=${encodeURIComponent(formData.email)}`
         );
@@ -136,7 +140,7 @@ export default function Signup() {
       <div className="w-full md:w-1/2 flex justify-center items-center">
         <div className="max-w-md w-full space-y-6 p-8 bg-white rounded-lg shadow-md">
           <h2 className="text-3xl font-bold text-gray-900 text-center">
-            Signup
+            Sign-Up
           </h2>
           <p className="text-gray-500 text-center">
             Create your account in just a few steps

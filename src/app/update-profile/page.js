@@ -13,7 +13,7 @@ export default function UpdateProfile() {
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!token) {
-            router.push("/"); // رجّع المستخدم للصفحة الرئيسية لو مفيش توكن
+            router.push("/"); 
         }
     }, []);
 
@@ -41,8 +41,6 @@ export default function UpdateProfile() {
 
             if (response.ok) {
                 setMessage("Profile updated successfully!");
-                // ممكن تنقله لصفحة تانية بعد التحديث
-                // router.push("/home");
             } else {
                 setMessage(data.message || "Failed to update profile.");
             }
