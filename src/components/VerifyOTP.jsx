@@ -1,19 +1,51 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { handleApiError } from '@/utils/errorHandling';
+import { useAuth } from '@/contexts/AuthContext';
+import { otpRateLimiter } from '@/utils/rateLimiter';
+
+const MAX_ATTEMPTS = 3;
+const OTP_EXPIRY_MINUTES = 5;
 
 export default function VerifyOTP() {
 	const [otp, setOtp] = useState(["", "", "", "", "", ""]);
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState(false);
+	const [attempts, setAttempts] = useState(0);
+	const [timeLeft, setTimeLeft] = useState(OTP_EXPIRY_MINUTES * 60);
+	const [isExpired, setIsExpired] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
 	const searchParams = useSearchParams();
 	const userEmail = searchParams.get("email");
-	const router = useRouter(); // Initialize useRouter to handle the redirect
-	console.log("user email : ", userEmail);
+	const router = useRouter();
+	const { verifyEmail } = useAuth();
+
+	useEffect(() => {
+		const timer = setInterval(() => {
+			setTimeLeft((prevTime) => {
+				if (prevTime <= 1) {
+					clearInterval(timer);
+					setIsExpired(true);
+					return 0;
+				}
+				return prevTime - 1;
+			});
+		}, 1000);
+
+		return () => clearInterval(timer);
+	}, []);
+
+	const formatTime = (seconds) => {
+		const minutes = Math.floor(seconds / 60);
+		const remainingSeconds = seconds % 60;
+		return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+	};
 
 	const handleChange = (index, value) => {
 		if (isNaN(value)) return;
-		let newOtp = [...otp];
+
+		const newOtp = [...otp];
 		newOtp[index] = value;
 		setOtp(newOtp);
 
@@ -24,56 +56,74 @@ export default function VerifyOTP() {
 		}
 	};
 
+	const validateOTP = (enteredOTP) => {
+		if (enteredOTP.length !== 6) {
+			return "Please enter a valid 6-digit OTP.";
+		}
+		if (!/^\d{6}$/.test(enteredOTP)) {
+			return "OTP must contain only numbers.";
+		}
+		return "";
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const enteredOTP = otp.join("");
 
-		if (enteredOTP.length !== 6) {
-			setError("Please enter a valid 6-digit OTP.");
+		if (isExpired) {
+			setError("OTP has expired. Please request a new one.");
 			return;
 		}
 
-		// Debugging: Log the email to check if it's valid
-		console.log("User Email:", userEmail);
+		if (attempts >= MAX_ATTEMPTS) {
+			setError("Maximum attempts reached. Please request a new OTP.");
+			return;
+		}
+
+		const enteredOTP = otp.join("");
+		const otpError = validateOTP(enteredOTP);
+		if (otpError) {
+			setError(otpError);
+			return;
+		}
 
 		if (!userEmail) {
 			setError("Email not found. Please try again.");
 			return;
 		}
 
-		try {
-			const response = await fetch("https://mizan-grad-project.runasp.net/api/auth/verify-email", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					email: userEmail,
-					token: enteredOTP,
-				}),
-			});
-
-			const data = await response.json();
-
-			// Check the response status and message from the backend
-			console.log("Backend Response:", data);
-
-			if (!response.ok) {
-				throw new Error(data.message || "OTP verification failed.");
-			}
-
-			setError("");
-			setSuccess(true);
-			console.log("✅ OTP verified successfully:", data);
-
-			// Redirect to login page after successful verification
-			router.push("/");
-
-		} catch (err) {
-			setSuccess(false);
-			setError(err.message);
-			console.error("❌ OTP verification error:", err);
+		// Check rate limiting
+		const rateLimitResult = otpRateLimiter.isRateLimited(userEmail);
+		if (rateLimitResult.limited) {
+			setError(`Too many attempts. Please try again in ${Math.ceil(rateLimitResult.timeUntilReset / 60)} minutes.`);
+			return;
 		}
+
+		setIsSubmitting(true);
+		setError("");
+
+		try {
+			await verifyEmail(userEmail, enteredOTP);
+			setSuccess(true);
+			setTimeout(() => {
+				router.push("/");
+			}, 2000);
+		} catch (err) {
+			setAttempts(prev => prev + 1);
+			handleApiError(err, setError);
+			if (attempts + 1 >= MAX_ATTEMPTS) {
+				setError("Maximum attempts reached. Please request a new OTP.");
+			}
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
+
+	const handleResendOTP = async () => {
+		// Implement resend OTP functionality
+		setAttempts(0);
+		setTimeLeft(OTP_EXPIRY_MINUTES * 60);
+		setIsExpired(false);
+		// Call resend OTP API
 	};
 
 	return (
@@ -95,14 +145,12 @@ export default function VerifyOTP() {
 						We have sent an OTP to your email. Please check your inbox.
 					</p>
 
-					{/* Success Message */}
 					{success && (
 						<p className="text-green-600 bg-green-100 p-3 rounded-lg mb-4">
-							OTP Verified Successfully!
+							OTP Verified Successfully! Redirecting...
 						</p>
 					)}
 
-					{/* OTP Input Fields */}
 					<form onSubmit={handleSubmit} className="space-y-4">
 						<div className="flex space-x-3 justify-center">
 							{otp.map((digit, index) => (
@@ -111,33 +159,51 @@ export default function VerifyOTP() {
 									id={`otp-${index}`}
 									type="text"
 									maxLength="1"
-									className="w-12 h-12 text-center text-lg border text-gray-900 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+									className={`w-12 h-12 text-center text-lg border text-gray-900 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${error ? "border-red-500" : ""}`}
 									value={digit}
 									onChange={(e) => handleChange(index, e.target.value)}
+									disabled={isExpired || attempts >= MAX_ATTEMPTS || isSubmitting || success}
 								/>
 							))}
 						</div>
 
 						{error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
-						{/* OTP Expiry Notice */}
-						<p className="text-gray-500 text-center mt-2">The code expires in 5:00 minutes</p>
+						<div className="text-center space-y-2">
+							<p className="text-gray-500">
+								Time remaining: {formatTime(timeLeft)}
+							</p>
+							<p className="text-gray-500">
+								Attempts remaining: {MAX_ATTEMPTS - attempts}
+							</p>
+						</div>
 
-						{/* Buttons */}
-						<div className="flex space-x-4 mt-4">
+						{(isExpired || attempts >= MAX_ATTEMPTS) && (
+							<button
+								type="button"
+								onClick={handleResendOTP}
+								className="w-full text-teal-600 underline py-2"
+								disabled={isSubmitting || success}
+							>
+								Resend OTP
+							</button>
+						)}
+
+						<div className="flex space-x-4">
 							<button
 								type="button"
 								className="w-1/2 border py-2 rounded-lg text-gray-700 hover:bg-gray-200"
-								onClick={() => window.history.back()}
+								onClick={() => router.back()}
+								disabled={isSubmitting || success}
 							>
 								Cancel
 							</button>
-
 							<button
-								className="w-1/2 text-center bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900"
 								type="submit"
+								className="w-1/2 bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900 disabled:opacity-50"
+								disabled={isExpired || attempts >= MAX_ATTEMPTS || isSubmitting || success}
 							>
-								Continue
+								{isSubmitting ? "Verifying..." : "Verify"}
 							</button>
 						</div>
 					</form>

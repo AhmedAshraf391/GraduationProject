@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { throttle } from "lodash";
 import { Search, Mail, Heart, Facebook, Instagram, Twitter, Linkedin } from "lucide-react";
 
-const BASE_URL = "https://mizan-grad-project.runasp.net/api";
 
 export default function OurServices() {
   const [scrolled, setScrolled] = useState(false);
