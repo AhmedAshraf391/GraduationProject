@@ -181,10 +181,10 @@ export default function Home() {
         <h2 className="text-center text-3xl font-bold mb-10">Our Lawyers</h2>
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-5">
           {[
-            "Ahmed Al-Janaini",
-            "Mohamed Al-Najjar",
-            "Laila Al-Makkawi",
-            "Heba Al-Sioufi",
+            "Adham Doma",
+            "Khalid Khater ",
+            "Ahmed Ashraf",
+            "Fares Fathy",
           ].map((lawyer, index) => (
             <div
               key={index}
