@@ -1,5 +1,7 @@
 "use client";
+
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function Login() {
@@ -8,6 +10,7 @@ export default function Login() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
+    const router = useRouter();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -23,17 +26,21 @@ export default function Login() {
                 body: JSON.stringify({ email, password }),
             });
 
+            console.log("Response:", response);
             const data = await response.json();
+            console.log("Data:", data);
 
-            if (response.ok) {
-                alert("Login successful!");
-                window.location.href = "/home";
-
+            if (response.ok && data.success) {
+                const { accessToken, isLawyer, id } = data.model;
+                const token = accessToken.token || accessToken; // Handle nested token or direct token
+                await login({ token, userId: id, isLawyer });
+                router.push(isLawyer ? "/update-profile" : "/home");
             } else {
                 setError(data.message || "Invalid email or password");
             }
         } catch (err) {
-            setError(err.message);
+            setError("An error occurred. Please try again.");
+            console.error(err);
         } finally {
             setLoading(false);
         }
@@ -52,7 +59,7 @@ export default function Login() {
             <div className="w-full md:w-1/2 flex justify-center items-center">
                 <div className="max-w-md w-full space-y-6 p-8 bg-white rounded-lg shadow-md">
                     <h2 className="text-3xl font-bold text-gray-900 text-center">Login</h2>
-                    <p className="text-gray-500 text-center">
+                    <p className="text-gray-600 text-center">
                         Login to your account
                     </p>
                     <form onSubmit={handleLogin} className="space-y-4">
@@ -61,7 +68,7 @@ export default function Login() {
                             <input
                                 type="email"
                                 placeholder="Enter your email"
-                                className="w-full text-gray-900 p-2 border border-gray-300 rounded-lg"
+                                className="w-full text-gray-900 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
@@ -73,7 +80,7 @@ export default function Login() {
                             <input
                                 type="password"
                                 placeholder="Enter your password"
-                                className="w-full text-gray-900 p-2 border border-gray-300 rounded-lg"
+                                className="w-full text-gray-900 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
@@ -89,7 +96,7 @@ export default function Login() {
                                 <input type="checkbox" className="mr-2" id="dot" />
                                 <label className="text-gray-700" htmlFor="dot">Remember me</label>
                             </div>
-                            <a href="/forgot-pass" className="text-blue-500 text-sm">
+                            <a href="/forgot-pass" className="text-blue-500 text-sm hover:underline">
                                 Forgot password?
                             </a>
                         </div>
@@ -97,19 +104,22 @@ export default function Login() {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900"
+                            className="w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900 disabled:bg-gray-500 transition-colors"
                         >
                             {loading ? "Logging in..." : "Login"}
                         </button>
 
-                        <button className="w-full flex justify-center text-gray-900 items-center border py-2 rounded-lg hover:bg-gray-200">
+                        <button
+                            type="button"
+                            className="w-full flex justify-center text-gray-900 items-center border py-2 rounded-lg hover:bg-gray-200 transition-colors"
+                        >
                             Continue with Google
                         </button>
                     </form>
 
                     <p className="text-center text-gray-600">
                         Don't have an account?{" "}
-                        <a href="/sign-up" className="text-blue-500 font-bold">
+                        <a href="/sign-up" className="text-blue-500 font-bold hover:underline">
                             Sign up
                         </a>
                     </p>

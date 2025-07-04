@@ -17,8 +17,8 @@ export default function LawyersClient() {
 	const searchParams = useSearchParams();
 	const specializationName = searchParams.get("specialization") || "";
 	const location = searchParams.get("location") || "";
-	const specialization = specializationName; // Use the name directly
-	const validLocation = location.toLowerCase(); // Removed static array, assuming validation from OurServices
+	const specialization = specializationName; 
+	const validLocation = location.toLowerCase(); 
 	const [scrolled, setScrolled] = useState(false);
 	const [lawyers, setLawyers] = useState([]);
 	const [loading, setLoading] = useState(true);
