@@ -184,7 +184,7 @@ export default function Home() {
             "Adham Doma",
             "Khalid Khater ",
             "Ahmed Ashraf",
-            "Fares Fathy",
+            "Hala Ali",
           ].map((lawyer, index) => (
             <div
               key={index}
