@@ -28,7 +28,6 @@ export default function LawyerDashboard() {
 					return;
 				}
 
-				// Temporary override: Assume isLawyer is true since database is updated
 				console.log("User details:", { id: user.userId, isLawyer: true, role: user.role || "USER" });
 				setLoading(false);
 
@@ -72,7 +71,7 @@ export default function LawyerDashboard() {
 					<li><a href="/update-profile" className="hover:text-gray-300">Update Profile</a></li>
 					<li><a href="#" className="hover:text-gray-300">Cases</a></li>
 					<li><a href="#" className="hover:text-gray-300">Appointments</a></li>
-					<li><a href="/logout" className="hover:text-gray-300">Logout</a></li>
+					<li><a href="#" className="hover:text-gray-300">Logout</a></li>
 				</ul>
 			</aside>
 			<main className="flex-1 p-8">
@@ -95,7 +94,7 @@ export default function LawyerDashboard() {
 						<p className="text-gray-600">0 upcoming</p>
 					</div>
 				</div>
-				{error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+				{/* {error && <p className="text-red-500 text-sm mt-4">{error}</p>} */}
 			</main>
 		</div>
 	);

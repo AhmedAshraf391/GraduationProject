@@ -18,29 +18,14 @@ export default function Login() {
         setLoading(true);
 
         try {
-            const response = await fetch("https://mizan-grad-project.runasp.net/api/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            });
-
-            console.log("Response:", response);
-            const data = await response.json();
-            console.log("Data:", data);
-
-            if (response.ok && data.success) {
-                const { accessToken, isLawyer, id } = data.model;
-                const token = accessToken.token || accessToken; // Handle nested token or direct token
-                await login({ token, userId: id, isLawyer });
-                router.push(isLawyer ? "/update-profile" : "/home");
-            } else {
-                setError(data.message || "Invalid email or password");
-            }
+            console.log("Calling login with credentials:", { email, password });
+            const result = await login({ email, password });
+            console.log("Login result:", result);
+            const { isLawyer } = result.user;
+            router.push(isLawyer ? "/update-profile" : "/home");
         } catch (err) {
-            setError("An error occurred. Please try again.");
-            console.error(err);
+            console.error("Error in handleLogin:", err.message);
+            setError(err.message || "Invalid email or password");
         } finally {
             setLoading(false);
         }

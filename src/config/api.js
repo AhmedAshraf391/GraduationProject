@@ -11,6 +11,12 @@ export const endpoints = {
         filter: `${API_BASE_URL}/Filter/filter-lawyers`,
         update: `${API_BASE_URL}/Lawyer/update-lawyer`,
     },
+    locations: {
+        getLocations: `${API_BASE_URL}/Locations/get-locations`,
+    },
+    specializations: {
+        getSpecializations: `${API_BASE_URL}/Specialization/get-specializations`,
+    },
 };
 
 export const createApiClient = (token = null) => {
@@ -25,54 +31,66 @@ export const createApiClient = (token = null) => {
 
     const handleResponse = async (response) => {
         try {
-            // Log raw response for debugging
             console.log("Raw response:", {
                 status: response.status,
                 statusText: response.statusText,
                 headers: Object.fromEntries(response.headers.entries()),
             });
 
-            // Get response as text first
             const text = await response.text();
             console.log("Response text:", text);
 
-            // Try to parse as JSON
             let data;
             try {
                 data = text ? JSON.parse(text) : {};
                 console.log("Parsed response:", data);
             } catch (e) {
-                // If not JSON, use text as is
                 data = text || "An error occurred";
                 console.log("Using text response:", data);
             }
 
-            // Handle error responses
             if (!response.ok) {
-                const error = new Error(
-                    (typeof data === "object" && data.message) ||
-                    (typeof data === "string" ? data : "An error occurred")
-                );
+                const errorMessage =
+                    (typeof data === "object" && (data.title || data.message)) ||
+                    (data.errors ? JSON.stringify(data.errors) : "An error occurred");
+                const error = new Error(errorMessage);
                 error.statusCode = response.status;
                 error.response = data;
                 throw error;
             }
 
-            // Special handling for login endpoint
             if (response.url.endsWith("/auth/login")) {
-                if (data.success && data.model) {
-                    // Extract token from nested accessToken object
-                    const { accessToken, isLawyer, id } = data.model;
-                    const token = accessToken?.token || accessToken; // Handle nested token or direct token
-                    return {
-                        success: data.success,
-                        message: data.message,
-                        model: { token, isLawyer, id },
-                    };
+                if (data.success && data.model && typeof data.model === "object") {
+                    const { accessToken, isLawyer, id, email, location, specialization } = data.model;
+                    const token = accessToken?.token || accessToken;
+                    if (token) {
+                        return {
+                            success: data.success,
+                            message: data.message,
+                            model: { token, isLawyer, id, email, location, specialization },
+                        };
+                    }
                 } else if (data.token) {
-                    // Fallback for direct token response
                     return { model: data.token };
                 }
+                console.warn("Unexpected login response structure:", data);
+                throw new Error("Unexpected login response structure");
+            }
+
+            if (response.url.endsWith("/Locations/get-locations")) {
+                if (data.success && Array.isArray(data.locations)) {
+                    return data.locations.map((loc) => loc.normalizedName);
+                }
+                console.warn("Unexpected locations response structure:", data);
+                throw new Error("Unexpected locations response structure");
+            }
+
+            if (response.url.endsWith("/Specialization/get-specializations")) {
+                if (data.success && Array.isArray(data.specializations)) {
+                    return data.specializations.map((spec) => spec.normalizedName);
+                }
+                console.warn("Unexpected specializations response structure:", data);
+                throw new Error("Unexpected specializations response structure");
             }
 
             return data;
