@@ -68,9 +68,9 @@ export default function LawyerDashboard() {
 			<aside className="w-64 bg-gray-800 text-white p-4">
 				<h3 className="text-xl font-bold mb-4">Menu</h3>
 				<ul className="space-y-2">
-					<li><a href="#" className="hover:text-gray-300">Update Profile</a></li>
+					{/* <li><a href="#" className="hover:text-gray-300">Update Profile</a></li>
 					<li><a href="#" className="hover:text-gray-300">Cases</a></li>
-					<li><a href="#" className="hover:text-gray-300">Appointments</a></li>
+					<li><a href="#" className="hover:text-gray-300">Appointments</a></li> */}
 					<li><a href="./" className="hover:text-gray-300">Logout</a></li>
 				</ul>
 			</aside>
