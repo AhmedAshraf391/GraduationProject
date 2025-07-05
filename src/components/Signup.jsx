@@ -19,44 +19,6 @@ export default function Signup() {
   const [serverError, setServerError] = useState("");
 
 
-  // const egyptGovernorates = [
-  //   "Cairo",
-  //   "Giza",
-  //   "Alexandria",
-  //   "Aswan",
-  //   "Asyut",
-  //   "Beheira",
-  //   "Beni Suef",
-  //   "Dakahlia",
-  //   "Damietta",
-  //   "Faiyum",
-  //   "Gharbia",
-  //   "Ismailia",
-  //   "Kafr El Sheikh",
-  //   "Luxor",
-  //   "Matruh",
-  //   "Minya",
-  //   "Monufia",
-  //   "New Valley",
-  //   "North Sinai",
-  //   "Port Said",
-  //   "Qalyubia",
-  //   "Qena",
-  //   "Red Sea",
-  //   "Sharqia",
-  //   "Sohag",
-  //   "South Sinai",
-  //   "Suez",
-  // ];
-
-  // const specializations = [
-  //   "Legal Consultation",
-  //   "Legal Document Preparation",
-  //   "Legal Representation",
-  //   "Online Legal Consultation",
-  //   "Corporate Legal Services",
-  // ];
-
   
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -81,7 +43,7 @@ export default function Signup() {
     if (formData.password !== formData.confirmPassword)
       errors.confirmPassword = "Passwords do not match";
     if (!formData.role) errors.role = "Please select a role";
-
+  
     setError(errors);
 
     if (Object.keys(errors).length > 0) {

@@ -17,8 +17,8 @@ export default function LawyersClient() {
 	const searchParams = useSearchParams();
 	const specializationName = searchParams.get("specialization") || "";
 	const location = searchParams.get("location") || "";
-	const specialization = specializationName; 
-	const validLocation = location.toLowerCase(); 
+	const specialization = specializationName;
+	const validLocation = location.toLowerCase();
 	const [scrolled, setScrolled] = useState(false);
 	const [lawyers, setLawyers] = useState([]);
 	const [loading, setLoading] = useState(true);
@@ -192,21 +192,18 @@ export default function LawyersClient() {
 					</div>
 
 					{/* Navigation Links */}
-					<ul
-						className={`hidden md:flex ml-16 space-x-6 ${scrolled ? "text-gray-300" : "text-white"
-							} font-medium`}
-					>
-						{["Home", "Our Services", "Contact us", "About us", "FAQ"].map(
-							(item, index) => (
-								<li key={index}>
-									<Link href={`/${item.toLowerCase().replace(/\s/g, "-")}`}>
-										<span className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">
-											{item}
-										</span>
-									</Link>
-								</li>
-							)
-						)}
+					<ul className={`hidden md:flex ml-16 space-x-6 ${scrolled ? "text-gray-300" : "text-white"} font-medium`}>
+						{[
+							{ name: 'Home', path: '/home' },
+							{ name: 'Our Services', path: '/our-services' },
+							{ name: 'Contact us', path: '/contact-us' },
+							{ name: 'About us', path: '/about-us' },
+							{ name: 'FAQ', path: '/FAQ' }
+						].map((item, idx) => (
+							<li key={idx}>
+								<Link href={item.path}>{item.name}</Link>
+							</li>
+						))}
 					</ul>
 
 					{/* Right Section: Search & Icons */}
@@ -216,13 +213,13 @@ export default function LawyersClient() {
 							<input
 								type="text"
 								placeholder="Search"
-								className="bg-white border border-white text-gray-900 text-sm px-4 py-2 rounded-full focus:outline-none  "
+								className="bg-transparent border border-white placeholder:text-white text-white text-sm px-4 py-2 rounded-full focus:outline-none  "
 							/>
-							<Search className="absolute right-3 top-2 text-gray-400" />
+							<Search className="absolute right-3 top-2 text-white" />
 						</div>
 
 						{/* Icons */}
-						<Mail className="text-white hover:text-gray-400 transition-colors cursor-pointer" />
+						<Mail className=" text-white hover:text-gray-400 cursor-pointer" />
 						<Heart className="text-white hover:text-gray-400 cursor-pointer" />
 
 						{/* Profile Image */}
@@ -265,7 +262,7 @@ export default function LawyersClient() {
 									src={lawyer.profileImage || "/images/10035116.jpg"}
 									alt={lawyer.name}
 									className="w-24 h-24 rounded-full object-cover border-2 border-teal-500 mb-4"
-									onError={(e) => (e.target.src = "/images/default-lawyer.png")}
+									onError={(e) => (e.target.src = "/images/10035116.jpg")}
 								/>
 								<h2 className="text-xl font-semibold">{lawyer.name}</h2>
 								<p className="text-teal-600">

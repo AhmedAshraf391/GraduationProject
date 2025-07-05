@@ -33,21 +33,18 @@ export default function ContactUs() {
                     </div>
 
                     {/* Navigation Links */}
-                    <ul
-                        className={`hidden md:flex ml-16 space-x-6 ${scrolled ? "text-gray-300" : "text-white"
-                            } font-medium`}
-                    >
-                        {["Home", "Our Services", "Contact us", "About us", "FAQ"].map(
-                            (item, index) => (
-                                <li key={index}>
-                                    <Link href={`/${item.toLowerCase().replace(/\s/g, "-")}`}>
-                                        <span className="relative after:absolute after:bottom-[-2px] after:left-0 after:w-0 after:h-[2px] after:bg-white after:transition-all after:duration-300 hover:after:w-full">
-                                            {item}
-                                        </span>
-                                    </Link>
-                                </li>
-                            )
-                        )}
+                    <ul className={`hidden md:flex ml-16 space-x-6 ${scrolled ? "text-gray-300" : "text-white"} font-medium`}>
+                        {[
+                            { name: 'Home', path: '/home' },
+                            { name: 'Our Services', path: '/our-services' },
+                            { name: 'Contact us', path: '/contact-us' },
+                            { name: 'About us', path: '/about-us' },
+                            { name: 'FAQ', path: '/FAQ' }
+                        ].map((item, idx) => (
+                            <li key={idx}>
+                                <Link href={item.path}>{item.name}</Link>
+                            </li>
+                        ))}
                     </ul>
 
                     {/* Right Section: Search & Icons */}

@@ -44,7 +44,9 @@ export default function AboutUs() {
                             { name: 'About us', path: '/about-us' },
                             { name: 'FAQ', path: '/FAQ' }
                         ].map((item, idx) => (
-                            <li key={idx}><Link href={item.path}>{item.name}</Link></li>
+                            <li key={idx}>
+                                <Link href={item.path}>{item.name}</Link>
+                            </li>
                         ))}
                     </ul>
 
