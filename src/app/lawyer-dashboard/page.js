@@ -1,4 +1,3 @@
-// src/app/lawyer-dashboard/page.js (Temporary Fix)
 "use client";
 
 import { useState, useEffect } from "react";
@@ -12,18 +11,20 @@ export default function LawyerDashboard() {
 	const { user, refreshUser } = useAuth();
 	const router = useRouter();
 
+	const [caseCount, setCaseCount] = useState(0);
+	const [appointmentCount, setAppointmentCount] = useState(0);
+
+	useEffect(() => {
+		setCaseCount(Math.floor(Math.random() * 50) + 1);
+		setAppointmentCount(Math.floor(Math.random() * 50) + 1);
+	}, []);
+
 	useEffect(() => {
 		console.log("useEffect triggered - Initial user state:", user);
 
 		const fetchUpdatedUser = async () => {
 			try {
-				console.log("Refreshing user data to reflect lawyer status...");
-				const result = await refreshUser();
-				console.log("Refresh result:", result);
-				console.log("User state after refresh:", user);
-
 				if (!user) {
-					console.log("User is undefined, redirecting to /home");
 					router.push("/home");
 					return;
 				}
@@ -51,7 +52,7 @@ export default function LawyerDashboard() {
 		};
 
 		fetchUpdatedUser();
-	}, [user, router, refreshUser]);
+	}, [user, router]);
 
 	if (loading) {
 		console.log("Rendering loading state...");
@@ -65,33 +66,49 @@ export default function LawyerDashboard() {
 
 	return (
 		<div className="min-h-screen bg-gray-100 flex">
-			<aside className="w-64 bg-gray-800 text-white p-4">
+			<aside className="w-64 bg-gray-100 text-slate-700 p-4 rounded-lg shadow-lg">
 				<h3 className="text-xl font-bold mb-4">Menu</h3>
 				<ul className="space-y-2">
-					{/* <li><a href="#" className="hover:text-gray-300">Update Profile</a></li>
-					<li><a href="#" className="hover:text-gray-300">Cases</a></li>
-					<li><a href="#" className="hover:text-gray-300">Appointments</a></li> */}
-					<li><a href="./" className="hover:text-gray-300">Logout</a></li>
+					<li><a href="/clients" className="hover:text-gray-500">Clients</a></li>
+					<li><a href="./" className="hover:text-gray-500">Logout</a></li>
 				</ul>
 			</aside>
-			<main className="flex-1 p-8">
+			<main className="flex-1 p-8 space-y-4">
 				<header className="mb-6">
-					<h1 className="text-3xl font-bold text-gray-900">Lawyer Dashboard</h1>
+					<h1 className="text-3xl font-bold text-gray-900 my-2">Lawyer Dashboard</h1>
 					<p className="text-gray-600">Welcome, {user.email} !</p>
 				</header>
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-					<div className="bg-white p-6 rounded-lg shadow-md">
-						<h3 className="text-lg font-semibold text-gray-800">Profile</h3>
-						<p className="text-gray-600">Location: {user?.location || "Not set"}</p>
-						<p className="text-gray-600">Specialization: {user?.specialization || "Not set"}</p>
-					</div>
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
 					<div className="bg-white p-6 rounded-lg shadow-md">
 						<h3 className="text-lg font-semibold text-gray-800">Active Cases</h3>
-						<p className="text-gray-600">10 cases</p>
+						<p className="text-gray-600">{caseCount} cases</p>
 					</div>
 					<div className="bg-white p-6 rounded-lg shadow-md">
-						<h3 className="text-lg font-semibold text-gray-800">Appointments</h3>
-						<p className="text-gray-600">15 upcoming</p>
+						<h3 className="text-lg font-semibold text-gray-800">Upcoming Appointments</h3>
+						<p className="text-gray-600">{appointmentCount} upcoming</p>
+					</div>
+				</div>
+				<div className="space-y-4 text-slate-900">
+					<div className="flex items-center p-2 bg-gray-100 rounded-lg shadow">
+						<span className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-2">📅</span>
+						<div>
+							<h3 className="font-semibold">Client Consultation with David Lee</h3>
+							<p className="text-sm text-gray-600">10:00 AM - 11:00 AM</p>
+						</div>
+					</div>
+					<div className="flex items-center p-2 bg-gray-100 rounded-lg shadow">
+						<span className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-2">📂</span>
+						<div>
+							<h3 className="font-semibold">Reviewing Documents for Case: Estate Planning</h3>
+							<p className="text-sm text-gray-600">Case ID: 2023-0012</p>
+						</div>
+					</div>
+					<div className="flex items-center p-2 bg-gray-100 rounded-lg shadow">
+						<span className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center mr-2">✉️</span>
+						<div>
+							<h3 className="font-semibold">New Message from Client: Emily Carter</h3>
+							<p className="text-sm text-gray-600">Received 2 hours ago</p>
+						</div>
 					</div>
 				</div>
 			</main>
